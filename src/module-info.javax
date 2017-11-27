@@ -1,0 +1,8 @@
+// For future Java 9 compatibility.
+// Not currently included -- it would force targeting Java9 bytecode.
+// Maven support for multi-release jars should enable using this, but it' not here yet.
+// Ditto for IDE support.
+
+module norswap.utils {
+    exports norswap.utils;
+}
