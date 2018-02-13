@@ -34,4 +34,17 @@ public final class Arrays
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Easy way to create an array with type inference.
+     * <p>
+     * e.g. {@code strs = array("a", "b");} instead of {@code strs = new String[] { "a", "b" }}
+     */
+    @SafeVarargs
+    public static <T> T[] array (T... items)
+    {
+        return items;
+    }
+
+    // ---------------------------------------------------------------------------------------------
 }
