@@ -7,6 +7,9 @@ import static norswap.utils.Vanilla.remove_last;
 
 /**
  * A stack implementation that extends {@link ArrayList}.
+ * <p>
+ * Compared to {@link java.util.ArrayDeque}, this enables indexing, but doesn't allow queue
+ * operations.
  */
 public final class ArrayStack<T> extends ArrayList<T>
 {
