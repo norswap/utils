@@ -1,10 +1,15 @@
 package norswap.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+
+import static norswap.utils.Util.cast;
 
 /**
  * Utility functions for Vanilla Java collections.
@@ -94,6 +99,74 @@ public final class Vanilla
     {
         if (b.length() < n) throw new NoSuchElementException();
         b.replace(b.length() - n, b.length(), "");
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Adds all {@code items} to {@code col}.
+     */
+    @SafeVarargs
+    public static <T> void add_array (Collection<T> col, T... items)
+    {
+        col.addAll(java.util.Arrays.asList(items));
+    }
+
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Adds all {@code items} to {@code col}.
+     */
+    public static <T> void add_all (Collection<T> col, Iterable<T> items)
+    {
+        if (items instanceof Collection)
+            col.addAll((Collection<T>) items);
+        else
+            items.forEach(col::add);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Concatenates all the items into a single array list, flattening them <b>at most once</b> if
+     * necessary.
+     *
+     * <p>Flattened items include arrays, {@link Iterable} (so collections as well), {@link
+     * Enumeration} and {@link Stream}.
+     */
+    public static ArrayList<Object> concat (Object... items)
+    {
+        return concat_into(new ArrayList<>(), items);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+
+    /**
+     * Concatenates all the items into a single array list, flattening them <b>at most once</b> if
+     * necessary.
+     *
+     * <p>Flattened items include arrays, {@link Iterable} (so collections as well), {@link
+     * Enumeration} and {@link Stream}.
+     */
+    public static <T extends Collection<Object>> T concat_into (T col, Object... items)
+    {
+        for (Object item: items)
+        {
+            /**/ if (item instanceof Object[])
+                add_array(col, (Object[]) items);
+            else if (item instanceof Iterable<?>)
+                add_all(col, cast(item));
+            else if (item instanceof Enumeration<?>)
+                col.addAll(Collections.list((Enumeration<?>) item));
+            else if (item instanceof Stream<?>)
+                ((Stream<?>) item).forEachOrdered(col::add);
+            else
+                col.add(item);
+        }
+
+        return col;
     }
 
     // ---------------------------------------------------------------------------------------------
