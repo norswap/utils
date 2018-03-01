@@ -55,6 +55,16 @@ abstract class AbstractMultiHashMap<K, V>
 
     // ---------------------------------------------------------------------------------------------
 
+    @Override public Collection<V> delete_pollute (K key, V value)
+    {
+        Collection<V> out = super.get(key);
+        if (out == null) return empty_collection();
+        out.remove(value);
+        return Collections.unmodifiableCollection(out);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
     @Override public Collection<V> add_all (K key, V[] values)
     {
         Collection<V> out = computeIfAbsent(key, k -> new_collection());

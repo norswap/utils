@@ -46,11 +46,22 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Removes the given key-value pair from the multimap.
+     * Removes the given key-value pair from the multimap. If the pair is the last for the given
+     * key, remove the underlying collection.
      *
      * @return The collection of values associated with the key after the operation has taken place.
      */
     Collection<V> delete (K key, V value);
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Removes the given key-value pair from the multimap.  If the pair is the last for the given
+     * key, <b>does not</b> remove the underlying collection.
+     *
+     * @return The collection of values associated with the key after the operation has taken place.
+     */
+    Collection<V> delete_pollute (K key, V value);
 
     // ---------------------------------------------------------------------------------------------
 
