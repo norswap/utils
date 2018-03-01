@@ -46,6 +46,15 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Removes the given key-value pair from the multimap.
+     *
+     * @return The collection of values associated with the key after the operation has taken place.
+     */
+    Collection<V> delete (K key, V value);
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Associates all values in {@code values}, while preserving all other associated values.
      *
      * @return The collection of values associated with the key after the operation has taken place.
