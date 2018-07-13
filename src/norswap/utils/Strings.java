@@ -11,6 +11,18 @@ public final class Strings
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Returns the last character of the string, or throws an exception if the string is empty.
+     */
+    public static char last_char (String string)
+    {
+        if (string.isEmpty())
+            throw new IllegalArgumentException("empty string");
+        return string.charAt(string.length() - 1);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns a string that repeats the character {@code c}, {@code n} times.
      */
     public static String repeat (char c, int n)
