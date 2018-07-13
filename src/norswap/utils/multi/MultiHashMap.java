@@ -9,7 +9,7 @@ import java.util.HashMap;
  * A straightfoward multimap implementation based on {@link HashMap}.
  * <p>
  * The implementation uses array lists as collections, so duplicate values are permitted.
- * Cast of collections {@link java.util.List} are safe.
+ * It is safe to cast the (collection) values to {@link java.util.List}.
  */
 public final class MultiHashMap<K, V> extends AbstractMultiHashMap<K, V>
 {
