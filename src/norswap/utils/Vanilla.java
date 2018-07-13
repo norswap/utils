@@ -67,6 +67,8 @@ public final class Vanilla
 
     /**
      * Returns a new {@link ArrayList} containing the items from {@code items}.
+     *
+     * <p>If the list doesn't need to grow, use {@link java.util.Arrays#asList} instead.
      */
     @SafeVarargs
     public static <T> ArrayList<T> list (T... items)
