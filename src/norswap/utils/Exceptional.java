@@ -91,6 +91,16 @@ public final class Exceptional<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Returns the underlying value or exception.
+     */
+    public Object unwrap()
+    {
+        return exception == null ? value : exception;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns the exception held by this object, or null if it holds a value instead.
      */
     public RuntimeException exception()
