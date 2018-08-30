@@ -5,7 +5,7 @@ import java.util.function.Function;
 /**
  * Utilities to deal with arrays.
  */
-public final class Arrays
+public final class NArrays
 {
     // ---------------------------------------------------------------------------------------------
 
