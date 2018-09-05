@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static norswap.utils.Util.cast;
@@ -169,6 +170,49 @@ public final class Vanilla
         }
 
         return col;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied iterable.
+     */
+    public static <T, R> ArrayList map (Iterable<T> iterable, Function<T, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>();
+        for (T it: iterable)
+            out.add(f.apply(it));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied array.
+     */
+    public static <T, R> ArrayList map (T[] array, Function<T, R> f)
+    {
+        map(array, new String[0], Object::toString);
+
+        ArrayList<R> out = new ArrayList<>();
+        for (T it: array)
+            out.add(f.apply(it));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
+     *
+     * <p>This function delegates to {@link NArrays#map}, it is redefined here because it would be
+     * hidden by the other map functions otherwise.
+     */
+    public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
+    {
+        return NArrays.map(array, witness, f);
     }
 
     // ---------------------------------------------------------------------------------------------
