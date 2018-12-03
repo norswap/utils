@@ -1,9 +1,13 @@
 package norswap.utils;
 
+import java.util.NoSuchElementException;
+
 /**
- * A very basic resizable array that holds integers.
+ * A very basic resizable array that holds integers. It also supports a basic stack interface.
  *
  * <p>When the backing array is resized, it is expanded to the closest superior power of 2.
+ *
+ * <p>The array is never shrunk in capacity when items are removed.
  */
 public final class ArrayListInt implements Cloneable
 {
@@ -88,6 +92,74 @@ public final class ArrayListInt implements Cloneable
         if (array.length < size + 1)
             array = NArrays.resize_binary_power(array, size + 1);
         array[size++] = v;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Pushes {@code item} at the top of the stack.
+     */
+    public void push (int item) {
+        add(item);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Pushes {@code item} at the top of the stack.
+     */
+    public final void push (int... items) {
+        for (int item: items)
+            add(item);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Removes and returns the item at the top of the stack.
+     * @throws NoSuchElementException if the stack is empty.
+     */
+    public int pop()
+    {
+        if (size == 0) throw new NoSuchElementException();
+        return array[--size];
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Removes the {@code n} items at the top of the stack.
+     * @throws NoSuchElementException if the stack does not have that many items, in which case
+     * no items are removed.
+     */
+    public void pop (int n)
+    {
+        if (size < n) throw new NoSuchElementException();
+        size -= n;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the item at the top of the stack.
+     * @throws NoSuchElementException if the stack is empty.
+     */
+    public int peek()
+    {
+        if (size == 0) throw new NoSuchElementException();
+        return array[size-1];
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the item that is {@code n} items below the top of the stack (0 = top).
+     * @throws NoSuchElementException if the stack does not have that many items.
+     */
+    public int back (int n)
+    {
+        if (size() <= n) throw new NoSuchElementException();
+        return array[size - 1 - n];
     }
 
     // ---------------------------------------------------------------------------------------------
