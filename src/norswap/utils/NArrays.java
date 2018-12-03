@@ -36,6 +36,19 @@ public final class NArrays
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Returns a copy of {@code array} whose size is the least power of two greater or equal
+     * to {@code min_size}. Max admissible value for min_size is 2^30.
+     */
+    public static int[] resize_binary_power (int[] array, int min_size)
+    {
+        int size = 1;
+        while (size < min_size) size <<= 1;
+        return java.util.Arrays.copyOf(array, size);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Easy way to create an array with type inference.
      * <p>
      * e.g. {@code strs = array("a", "b");} instead of {@code strs = new String[] { "a", "b" }}
