@@ -7,6 +7,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -17,6 +18,21 @@ import java.util.List;
  */
 public final class IO
 {
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a string with the file contents, or null if the file could not be read.
+     */
+    public static String slurp (String file)
+    {
+        try {
+            return new String(Files.readAllBytes(Paths.get(file)));
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+
     // ---------------------------------------------------------------------------------------------
 
     /**

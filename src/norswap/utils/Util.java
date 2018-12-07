@@ -1,8 +1,5 @@
 package norswap.utils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import static norswap.utils.Strings.append;
 import static norswap.utils.Vanilla.pop;
@@ -21,21 +18,6 @@ public final class Util
     {
         // noinspection unchecked
         return (T) obj;
-    }
-
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a string with the file contents, or null if the file could not be read.
-     */
-    public static String slurp (String file)
-    {
-        try {
-            return new String(Files.readAllBytes(Paths.get(file)));
-        }
-        catch (IOException e) {
-            return null;
-        }
     }
 
     // ---------------------------------------------------------------------------------------------
