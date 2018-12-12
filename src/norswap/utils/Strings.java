@@ -126,4 +126,24 @@ public final class Strings
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a human-friendly string representing a size in bytes - using the maximal unit
+     * reached, and displaying one decimal place.
+     *
+     * @param si controls whether SI (international system) units are used or not. In SI, a KiB is
+     * 1000B, whereas in the traditional system, a KB is 1024B.
+     *
+     * @author https://stackoverflow.com/a/3758880/298664
+     */
+    public static String human_friendly_byte_count (long bytes, boolean si)
+    {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    // ---------------------------------------------------------------------------------------------
 }
