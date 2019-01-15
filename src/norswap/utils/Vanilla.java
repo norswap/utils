@@ -3,6 +3,7 @@ package norswap.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -211,6 +212,98 @@ public final class Vanilla
     public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
     {
         return NArrays.map(array, witness, f);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    private static void check_deque_size (Deque<?> deque, int amount)
+    {
+        if (amount < 0 || deque.size() < amount)
+            throw new IndexOutOfBoundsException(
+                "amount (" + amount + ") too large for eque of size (" + deque.size() + ")");
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the item at position {@code depth} from the front/top of the {@code deque} (use index
+     * 0 to get the front of the deque).
+     *
+     * @throws IndexOutOfBoundsException if the index is invalid
+     */
+    public static <T> T peek_index (Deque<T> deque, int depth)
+    {
+        check_deque_size(deque, depth + 1);
+        int i = 0;
+        for (T it: deque) {
+            if (i++ == depth)
+                return it;
+        }
+        throw new Error(); // unreachable
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array containing the {@code amount} items at the front/top of the {@code deque},
+     * in reverse order of distance to the front (the front of the deque will be the last element of
+     * the array).
+     */
+    public static <T> T[] peek (Deque<T> deque, int amount)
+    {
+        check_deque_size(deque, amount);
+        @SuppressWarnings("unchecked")
+        T[] args = (T[]) new Object[amount];
+        int i = 1;
+        for (T it: deque)
+            if (i <= amount) args[amount - i++] = it;
+            else break;
+        return args;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array containing the items between {@code index} and the front/top of the {@code
+     * deque}, where {@code index} is the distance from the end/bottom of the deque (specifying an
+     * {@code index} of 0 returns all values in the deque).
+     */
+    public static <T> T[] peek_from (Deque<T> deque, int index)
+    {
+        return peek(deque, deque.size() - index);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array containing the {@code amount} items at the front/top of the {@code deque},
+     * in reverse order of distance to the front (the front of the deque will be the last element of
+     * the array).
+     *
+     * <p>All values returned are popped from the stack.
+     */
+    public static <T> T[] pop (Deque<T> deque, int amount)
+    {
+        check_deque_size(deque, amount);
+        @SuppressWarnings("unchecked")
+        T[] args = (T[]) new Object[amount];
+        for (int i = 1; i <= amount; ++i)
+            args[amount - i] = deque.pop();
+        return args;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array containing the items between {@code index} and the front/top of the {@code
+     * deque}, where {@code index} is the distance from the end/bottom of the deque (specifying an
+     * {@code index} of 0 returns all values in the deque).
+     *
+     * <p>All values returned are popped from the stack.
+     */
+    public static <T> T[] pop_from (Deque<T> deque, int index)
+    {
+        return pop(deque, deque.size() - index);
     }
 
     // ---------------------------------------------------------------------------------------------
