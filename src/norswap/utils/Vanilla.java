@@ -178,7 +178,7 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied iterable.
      */
-    public static <T, R> ArrayList map (Iterable<T> iterable, Function<T, R> f)
+    public static <T, R> ArrayList<R> map (Iterable<T> iterable, Function<T, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         for (T it: iterable)
@@ -192,10 +192,8 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied array.
      */
-    public static <T, R> ArrayList map (T[] array, Function<T, R> f)
+    public static <T, R> ArrayList<R> map (T[] array, Function<T, R> f)
     {
-        map(array, new String[0], Object::toString);
-
         ArrayList<R> out = new ArrayList<>();
         for (T it: array)
             out.add(f.apply(it));
