@@ -2,13 +2,15 @@ package norswap.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
-import static norswap.utils.Vanilla.remove_last;
+import java.util.function.IntFunction;
 
 /**
- * A stack implementation that extends {@link ArrayList}.
- * <p>
- * Compared to {@link java.util.ArrayDeque}, this enables indexing, but doesn't allow queue
+ * A stack implementation that extends {@link ArrayList}. Items are pushed and popped at the end
+ * of the list.
+ *
+ * <p>Compared to {@link java.util.ArrayDeque}, this enables indexing, but doesn't allow queue
  * operations.
  */
 public final class ArrayStack<T> extends ArrayList<T>
@@ -20,10 +22,31 @@ public final class ArrayStack<T> extends ArrayList<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Creates a new array stack with the given elements.
+     */
+    @SafeVarargs
+    public ArrayStack (T... elements) {
+        super(elements.length);
+        add(elements);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Creates a new array stack with the given capacity.
      */
     public ArrayStack (int n) {
         super(n);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Adds all the elements to the stack.
+     */
+    @SafeVarargs
+    public final void add (T... elements) {
+        Vanilla.add_array(this, elements);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -47,8 +70,51 @@ public final class ArrayStack<T> extends ArrayList<T>
 
     // ---------------------------------------------------------------------------------------------
 
+    private String amt_oob_msg (int n)
+    {
+        return "Amount [" + n + "invalid for stack size [" + size() + "]";
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    private String index_oob_msg (int i)
+    {
+        return "Index [" + i + "] invalid for stack size [" + size() + "]";
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a sublist (as per {@link #subList(int, int)}) holding the {@code n} items at the
+     * top of the stack (end of the array).
+     *
+     * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()]}.
+     */
+    public List<T> top (int n)
+    {
+        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        return subList(size() - n, size());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Removes the top {@code n} elements of the stack.
+     *
+     * @throws IndexOutOfBoundsException @throws IndexOutOfBoundsException if {@code n} is outside
+     * {@code [0, size()]}, in which case no items are removed.
+     */
+    public void remove_top (int n)
+    {
+        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        top(n).clear();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Removes and returns the item at the top of the stack.
+     *
      * @throws NoSuchElementException if the stack is empty.
      */
     public T pop()
@@ -60,14 +126,33 @@ public final class ArrayStack<T> extends ArrayList<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Removes the {@code n} items at the top of the stack.
-     * @throws NoSuchElementException if the stack does not have that many items, in which case
+     * Removes and returns the {@code n} items at the top of the stack, in an array created by
+     * {@code mk_array}.
+     *
+     * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()]}, in which case
      * no items are removed.
      */
-    public void pop (int n)
+    public T[] pop (int n, IntFunction<T[]> mk_array)
     {
-        if (size() < n) throw new NoSuchElementException();
-        remove_last(this, n);
+        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        List<T> sub = top(n);
+        T[] out = sub.toArray(mk_array.apply(n));
+        sub.clear();
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Removes and returns the the items between {@code index} and the top of the stack,
+     * in an array created by {@code mk_array}.
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is outside {@code [0, size()]}.
+     */
+    public T[] pop_from (int index, IntFunction<T[]> mk_array)
+    {
+        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
+        return pop(size() - index, mk_array);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -77,8 +162,47 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public T poll()
     {
-        if (isEmpty()) return null;
-        return remove(size() - 1);
+        return isEmpty() ? null : remove(size() - 1);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the item at the top of the stack.
+     *
+     * @throws NoSuchElementException if the stack is empty.
+     */
+    public T peek()
+    {
+        if (isEmpty()) throw new NoSuchElementException();
+        return get(size() - 1);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the {@code n} items at the top of the stack, in an array created by {@code mk_array}.
+     *
+     * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()]}.
+     */
+    public T[] peek (int n, IntFunction<T[]> mk_array)
+    {
+        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        return top(n).toArray(mk_array.apply(n));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return an array containing the items between {@code index} and the top of the stack, in
+     * an array created by {@code mk_array}.
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is outside {@code [0, size()]}.
+     */
+    public T[] peek_from (int index, IntFunction<T[]> mk_array)
+    {
+        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
+        return peek(size() - index, mk_array);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -86,22 +210,34 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * @return the item at the top of the stack, or null if the stack is empty.
      */
-    public T peek()
+    public T snoop()
     {
-        if (isEmpty()) return null;
-        return get(size() - 1);
+        return isEmpty() ? null : get(size() - 1);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the item that is {@code n} items below the top of the stack (0 = top).
+     *
+     * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()-1]}.
+     */
+    public T peek_back (int n)
+    {
+        // TODO incorrect message
+        if (0 < n || size() <= n) throw new IndexOutOfBoundsException(index_oob_msg(n));
+        return get(size() - 1 - n);
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
      * @return the item that is {@code n} items below the top of the stack (0 = top), or null
-     * if the stack does not have that many items.
+     * if the stack does not have that many items or {@code n} is negative.
      */
-    public T back (int n)
+    public T snoop_back (int n)
     {
-        if (size() <= n) return null;
-        return get(size() - 1 - n);
+        return 0 < n || size() <= n ? null : get(size() - 1 - n);
     }
 
     // ---------------------------------------------------------------------------------------------
