@@ -7,9 +7,12 @@ import java.util.function.Supplier;
 /**
  * A parent class for test classes that implements a few handy assertion methods.
  *
- * The key point of this compared to the usual frameworks is the ability to trim the stack traces of
- * the thrown assertion errors, as well as other exceptions (see below and {@link
+ * <p>The key point of this compared to the usual frameworks is the ability to trim the stack traces
+ * of the thrown assertion errors, as well as other exceptions (see below and {@link
  * #trim_stack_trace}). This is fully compatible with TestNG (maybe with JUnit, haven't checked).
+ *
+ * <p>If you want to trim other stack traces in a similar fashion, use {@link
+ * #trim_stack_trace(Throwable, int)}.
  *
  * <p>The assertion methods should be pretty obvious and repetitive and so they are not documented
  * individually. Here are a few precisions that apply to them.
@@ -20,6 +23,13 @@ import java.util.function.Supplier;
  *
  * <p>All assertion methods take care of peeling themselves off (as only the assertion call site
  * is really interesting), so you do not need to account for them in {@code peel}.
+ *
+ * <p>Also see the documentation of {@link #trace_separator} and {@link #bottom_class} for
+ * further stack trace customization.
+ *
+ * <p>There are two ways to use the fixture: either make the test class inherit it, or instantiate
+ * it and call its methods directly. In the latter case, you should re-assign {@link
+ * #bottom_class}.</p>
  *
  * <p>Whenever the assertion message is supplied by a {@link Supplier}, the supplier is only
  * called if the assertion is violated, and only once.
@@ -32,11 +42,8 @@ import java.util.function.Supplier;
  * (although for some reason the plugin only offer values comparisons when equality constraints are
  * violated, not different constraints). Might be compatible with JUnit as well, but I haven't
  * checked. Pull requests welcome.
- *
- * <p>Also see the documentation of {@link #trace_separator} and {@link #peel_test_runner}
- * for additional usage notices.
  */
-public abstract class TestFixture
+public class TestFixture
 {
     // ---------------------------------------------------------------------------------------------
 
@@ -50,30 +57,32 @@ public abstract class TestFixture
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Whether to remove stack trace elements pertaining to the test runner (basically anything
-     * under the test class in stack trace) from the assertion errors' stack traces. Defaults to
-     * true.
+     * If this is non-null, everything in a reported stack trace that would appear <b>under</b>
+     * (i.e. "called earlier than") the last occurence of this class will be removed.
      *
-     * <p>If you want to apply the same treatment to other exceptions, use {@link
-     * #trim_stack_trace}.
+     * <p>This does not impact further stack trace pruning (at the top) via a {@code peel} parameter.
+     *
+     * <p>By default, this is initialized to the {@code this.getClass()} as it is customary for test
+     * classes to extend {@code TestFixture}. However, if you use the fixture as a stand-alone
+     * object, you'll need to change this field, or the stack traces won't show where the assertion
+     * occured (as the call site must necessarily appear under calls in {@code TestFixture}).
      */
-    public boolean peel_test_runner = true;
+    public Class<?> bottom_class = this.getClass();
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Trims the stack trace of the given throwable, removing {@code peel} stack trace
-     * elements at the top of the stack trace (the most recently called methods),
-     * and removes all stack trace elements under the last occurence of the class whose full
-     * name (the dot-separated "binary name") is equal to {@code bottom_class}, if it isn't null.
+     * Trims the stack trace of the given throwable, removing {@code peel} stack trace elements at
+     * the top of the stack trace (the most recently called methods), and removes all stack trace
+     * elements under the last occurence of {@link #bottom_class}, if it isn't null.
      */
-    public static void trim_stack_trace (Throwable t, int peel, String bottom_class)
+    public void trim_stack_trace (Throwable t, int peel)
     {
         StackTraceElement[] trace = t.getStackTrace();
         int new_end = trace.length;
 
         for (int i = trace.length - 1; i >= 0; --i)
-            if (trace[i].getClassName().equals(bottom_class)) {
+            if (trace[i].getClassName().equals(bottom_class.getName())) {
                 new_end = i + 1;
                 break;
             }
@@ -86,12 +95,12 @@ public abstract class TestFixture
     /**
      * Throws an {@link AssertionError} with the given message. Removes itself and {@code peel}
      * additional stack trace elements at the top of the stack trace, and honors the {@link
-     * #peel_test_runner} setting.
+     * #bottom_class} setting.
      */
     public void throw_assertion (int peel, String msg)
     {
         AssertionError error = new AssertionError(msg + trace_separator);
-        trim_stack_trace(error, peel + 1, peel_test_runner ? this.getClass().getName() : null);
+        trim_stack_trace(error, peel + 1);
         throw error;
     }
 
