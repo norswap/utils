@@ -3,7 +3,8 @@ package norswap.utils;
 import java.util.Random;
 
 /**
- * Utilities related to random number generation. These methods are not thread-safe.
+ * Utilities related to random number generation based on a private {@link Random} instance. These
+ * methods are not thread-safe.
  */
 public final class Chance
 {
