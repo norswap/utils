@@ -1,5 +1,6 @@
 package norswap.utils;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -70,6 +71,47 @@ public final class NArrays
     public static <T> T[] array (T... items)
     {
         return items;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Packs the given array, by moving all null values to the end of the array.
+     * @return The number of non-null items in the array.
+     */
+    public static <T> int pack (T[] array)
+    {
+        int j = 0;
+        for (int i = 0; i < array.length ; ++i)
+        {
+            if (array[i++] == null) continue;
+            array[j++] = array[i-1];
+        }
+        return j;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Packs the given array, by moving all null values to the end of the array.
+     * @return {@code array}
+     */
+    public static <T> T[] pack_ret (T[] array) {
+        pack(array);
+        return array;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a packed copy of the given array, where all null values have been removed and
+     * the array is exactly big enough to hold all the non-null values.
+     */
+    public static <T> T[] packed (T[] array)
+    {
+        T[] copy = array.clone();
+        int len = pack(copy);
+        return Arrays.copyOf(copy, len);
     }
 
     // ---------------------------------------------------------------------------------------------
