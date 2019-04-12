@@ -1,6 +1,7 @@
 package norswap.utils;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -112,6 +113,31 @@ public final class NArrays
         T[] copy = array.clone();
         int len = pack(copy);
         return Arrays.copyOf(copy, len);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return the index of {@code item} within {@code array}, or -1 if the array does not contain
+     * the item. Null items are supported.
+     */
+    public static <T> int index_of (T[] array, T item)
+    {
+        for (int i = 0; i < array.length; ++i)
+            if (Objects.equals(array[i], item))
+                return i;
+        return -1;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns true if and only if the {@code array} contains {@code item}.
+     * Null items are supported.
+     */
+    public static <T> boolean contains (T[] array, T item)
+    {
+        return index_of(array, item) >= 0;
     }
 
     // ---------------------------------------------------------------------------------------------
