@@ -141,4 +141,16 @@ public final class NArrays
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a copy of array with the items in {@code items} appended at the end.
+     */
+    public static <T> T[] append (T[] array, T... items)
+    {
+        T[] copy = Arrays.copyOf(array, array.length + items.length);
+        System.arraycopy(items, 0, copy, array.length, items.length);
+        return copy;
+    }
+
+    // ---------------------------------------------------------------------------------------------
 }
