@@ -177,6 +177,20 @@ public final class Vanilla
 
     /**
      * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied collection.
+     */
+    public static <T, R> ArrayList<R> map (Collection<T> collection, Function<T, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>(collection.size());
+        for (T it: collection)
+            out.add(f.apply(it));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied iterable.
      */
     public static <T, R> ArrayList<R> map (Iterable<T> iterable, Function<T, R> f)
@@ -185,6 +199,40 @@ public final class Vanilla
         for (T it: iterable)
             out.add(f.apply(it));
         return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array containing the result of applying {@code f} to all items
+     * in the supplied collection.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array not
+     * be mutated in any way.
+     */
+    public static <T, R> R[] map (Collection<T> collection, R[] witness, Function<T, R> f)
+    {
+        R[] out = java.util.Arrays.copyOf(witness, collection.size());
+        int i = 0;
+        for (T item: collection)
+            out[i++] = f.apply(item);
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array containing the result of applying {@code f} to all items
+     * in the supplied iterable.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array not
+     * be mutated in any way.
+     */
+    public static <T, R> R[] map (Iterable<T> iterable, R[] witness, Function<T, R> f)
+    {
+        return map(iterable, f).toArray(witness);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -205,6 +253,10 @@ public final class Vanilla
 
     /**
      * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array not
+     * be mutated in any way.
      *
      * <p>This function delegates to {@link NArrays#map}, it is redefined here because it would be
      * hidden by the other map functions otherwise.

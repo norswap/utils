@@ -13,6 +13,10 @@ public final class NArrays
 
     /**
      * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array not
+     * be mutated in any way.
      */
     public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
     {
