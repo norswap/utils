@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static norswap.utils.Util.cast;
@@ -356,6 +357,20 @@ public final class Vanilla
     public static <T> T[] pop_from (Deque<T> deque, int index)
     {
         return pop(deque, deque.size() - index);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Collects the items of {@code stream} into a list.
+     *
+     * <p>Equivalent to {@code stream.collect(Collectors.toList())}, which is a mouthful for such
+     * a common operation.
+     *
+     * <p>Compared to {@link #concat(Object...)}, the returned list has the proper type parameter.
+     */
+    public static <T> List<T> as_list(Stream<T> stream) {
+        return stream.collect(Collectors.toList());
     }
 
     // ---------------------------------------------------------------------------------------------
