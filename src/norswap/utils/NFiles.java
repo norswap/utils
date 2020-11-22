@@ -1,6 +1,7 @@
 package norswap.utils;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -44,6 +45,18 @@ public final class NFiles
         });
 
         return result;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns true iff the path denotes a file whose name starts with a dot.
+     *
+     * <p>A reference to this method can be passed to {@link Files#newDirectoryStream(Path,
+     * DirectoryStream.Filter)} to ignore dotfiles in a directory.
+     */
+    public static boolean no_dotfiles (Path path) {
+        return !path.getFileName().startsWith(".");
     }
 
     // ---------------------------------------------------------------------------------------------
