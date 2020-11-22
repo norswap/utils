@@ -10,7 +10,7 @@ public final class Exceptions
 {
     /**
      * Returns a string representation of the stack trace of the given throwable, as per {@link
-     * Throwable#printStackTrace}.
+     * Throwable#printStackTrace()}.
      */
     public static String string_stack_trace (Throwable t)
     {

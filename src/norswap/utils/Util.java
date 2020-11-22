@@ -72,5 +72,19 @@ public final class Util
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * A way to check assertions even when the -ea flag is not passed.
+     *
+     * <p>If the assertion fails, {@code format} and {@code args} will be passed to {@link
+     * String#format(String, Object...) to generate the thrown {@link AssertionError}.
+     */
+    public static void assertion(boolean condition, String format, Object... args)
+            throws AssertionError
+    {
+        if (!condition) throw new AssertionError(String.format(format, args));
+    }
+
+    // ---------------------------------------------------------------------------------------------
 }
 
