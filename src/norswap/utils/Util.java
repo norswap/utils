@@ -78,11 +78,14 @@ public final class Util
      *
      * <p>If the assertion fails, {@code format} and {@code args} will be passed to {@link
      * String#format(String, Object...) to generate the thrown {@link AssertionError}.
+     *
+     * <p>This method itself will not appear in the stack trace.
      */
     public static void assertion(boolean condition, String format, Object... args)
             throws AssertionError
     {
-        if (!condition) throw new AssertionError(String.format(format, args));
+        if (!condition)
+            throw Exceptions.trim_stack_trace(1, new AssertionError(String.format(format, args)));
     }
 
     // ---------------------------------------------------------------------------------------------
