@@ -15,6 +15,7 @@
 - `Chance`: Utility functions for random number generation based on a private `Random` instance.
 - `Exceptions`: Utility functions dealing with exceptions.
 - `IO`: Utility functions for input/output.
+- `NFiles`: Utility funcitons for dealing with files and paths.
 - `Predicates`: Utilities for dealing with predicate functions.
 - `Strings`: Utility functions dealing with strings and string builders.
 - `Vanilla`: Utility functions for Vanilla Java collections.
