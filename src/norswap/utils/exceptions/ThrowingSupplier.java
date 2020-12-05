@@ -1,4 +1,4 @@
-package norswap.utils;
+package norswap.utils.exceptions;
 
 import java.util.function.Supplier;
 

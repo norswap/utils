@@ -1,4 +1,4 @@
-package norswap.utils;
+package norswap.utils.exceptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,6 +9,8 @@ import java.util.Arrays;
  */
 public final class Exceptions
 {
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Returns a string representation of the stack trace of the given throwable, as per {@link
      * Throwable#printStackTrace()}.
@@ -22,6 +24,8 @@ public final class Exceptions
         return trace.toString();
     }
 
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Trims the given stack trace, removing {@code peel} stack trace elements at the top of the
      * stack trace (the most recently called methods).
@@ -29,6 +33,8 @@ public final class Exceptions
     public static StackTraceElement[] trim_stack_trace (int peel, StackTraceElement[] trace) {
         return Arrays.copyOfRange(trace, peel, trace.length);
     }
+
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Trims the stack trace of the given throwable, removing {@code peel} stack trace elements at
@@ -39,6 +45,8 @@ public final class Exceptions
         throwable.setStackTrace(trim_stack_trace(peel, throwable.getStackTrace()));
         return throwable;
     }
+
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
@@ -54,6 +62,8 @@ public final class Exceptions
         }
     }
 
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
      * might throw bu wrapping it in a {@link RuntimeException}.
@@ -68,6 +78,8 @@ public final class Exceptions
         }
     }
 
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Rethrows {@code t} as-is if it isn't a checked exception, otherwise wraps it in
      * a {@link RuntimeException} before rethrowing it.
@@ -80,4 +92,6 @@ public final class Exceptions
         else
             throw new RuntimeException(t);
     }
+
+    // ---------------------------------------------------------------------------------------------
 }

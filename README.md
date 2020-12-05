@@ -2,7 +2,7 @@
 
 [![jitpack](https://jitpack.io/v/norswap/norswap-utils.svg)][jitpack]
 
-- [Maven Dependency][jitpack] (the badge above indicates the latest commit available)
+- [Maven Dependency][jitpack]
 - [Javadoc][javadoc]
 
 [jitpack]: https://jitpack.io/#norswap/norswap-utils
@@ -10,10 +10,9 @@
 
 ---
 
-## Utilities
+## General Utilities
 
 - `Chance`: Utility functions for random number generation based on a private `Random` instance.
-- `Exceptions`: Utility functions dealing with exceptions.
 - `IO`: Utility functions for input/output.
 - `NFiles`: Utility funcitons for dealing with files and paths.
 - `Predicates`: Utilities for dealing with predicate functions.
@@ -21,6 +20,13 @@
 - `Vanilla`: Utility functions for Vanilla Java collections.
 - `Util`: Miscellaneous utility functions.
 - `NArrays`: Utility functions dealing with arrays. 
+
+## Exceptions
+- `Exceptional`: Either wraps a value or an exception.
+- `NoStackException`: A `RuntimeException` that does not fill the stack trace.
+- `ThrowingSupplier`: Just like `java.util.function.Supplier`, but allowed to throw exceptions.
+- `ThrowingRunnable`: Just like `java.lang.Runnable`, but allowd to throw exceptions.
+- `Exceptions`: Utility functions dealing with exceptions and stack traces.
 
 ## Data Structures
 
@@ -32,12 +38,9 @@
 
 ## Other
 
-- `Exceptional`: Either wraps a value or an exception.
 - `Indexed`: A pair made out of an integer and a value.
-- `NoStackException`: A `RuntimeException` that does not fill the stack trace.
 - `Pair`: A simple type for a pair of values.
 - `Slot`: A simple wrapper for a single value, useful when dealing with lambda capture and mutation.
-- `ThrowingSupplier`: Just like `Supplier`, but allowed to throw exceptions.
 
 ## Scaffolding
 

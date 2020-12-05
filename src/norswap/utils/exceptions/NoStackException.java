@@ -1,4 +1,4 @@
-package norswap.utils;
+package norswap.utils.exceptions;
 
 /**
  * A runtime exception which inhibits stack trace construction, leading to big performance gains
