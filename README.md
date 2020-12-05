@@ -10,6 +10,8 @@
 
 ---
 
+A collection of Java (8+) utilities.
+
 ## General Utilities
 
 - `Chance`: Utility functions for random number generation based on a private `Random` instance.
