@@ -41,28 +41,43 @@ public final class Exceptions
     }
 
     /**
-     * Return the value returned by the given supplier, suppressing any {@link Throwable} it might
-     * throw. To only suppress checked {@link Exception}, use {@link #suppress}.
+     * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
+     * might throw bu wrapping it in a {@link RuntimeException}.
      */
-    public static <T> T suppress_all (ThrowingSupplier<T> supplier) {
+    public static void suppress (ThrowingRunnable runnable) {
         try {
-            return supplier.get();
+            runnable.run();
+        } catch (RuntimeException | Error e) {
+            throw e;
         } catch (Throwable t) {
-            throw new Error(
-                    "Exception explicitly suppressed by programmer should not have been thrown", t);
+            throw new RuntimeException(t);
         }
     }
 
     /**
      * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
-     * might throw. To suppress all {@link Throwable}, use {@link #suppress_all}.
+     * might throw bu wrapping it in a {@link RuntimeException}.
      */
     public static <T> T suppress (ThrowingSupplier<T> supplier) {
         try {
             return supplier.get();
-        } catch (Exception t) {
-            throw new Error(
-                    "Exception explicitly suppressed by programmer should not have been thrown", t);
+        } catch (RuntimeException | Error e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
         }
+    }
+
+    /**
+     * Rethrows {@code t} as-is if it isn't a checked exception, otherwise wraps it in
+     * a {@link RuntimeException} before rethrowing it.
+     */
+    public static void rethrow (Throwable t) {
+        if (t instanceof RuntimeException)
+            throw (RuntimeException) t;
+        if (t instanceof Error)
+            throw (Error) t;
+        else
+            throw new RuntimeException(t);
     }
 }
