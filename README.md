@@ -33,8 +33,8 @@
 - `ArrayStack`: A stack implementation that extends ArrayList.
 - `ArrayListInt`: Pendant of `ArrayList` specialized for `int`, with a small stack interface.
 - `ArrayListLong`: Pendant of `ArrayList` specialized for `long`, with a small stack interface.
-- `multi` (package): defines the `MultiMap<K, V>` that extends `Map<K, Collection<V>>`, as well as
-  implementations thereof. A multimap is a map where multiple values can be bound to a single key.
+- `multimap` (package): defines the `MultiMap<K, V>` that extends `Map<K, Collection<V>>`, as well
+  as implementations thereof. A multimap is a map where multiple values can be bound to a single key. 
 
 ## Other
 
@@ -45,4 +45,4 @@
 ## Scaffolding
 
 - `TestFixture`: A base class for test classes that implements some handy assertion methods.
-Compatible at least with TestNG.
+  Compatible at least with TestNG.

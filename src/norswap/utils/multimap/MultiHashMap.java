@@ -1,30 +1,30 @@
-package norswap.utils.multi;
+package norswap.utils.multimap;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * A straightfoward multimap implementation based on {@link HashMap}.
  * <p>
- * The implementation uses hash sets as collections, so duplicate values are
- * automatically eliminated. Casts of collections to {@link java.util.Set} are safe.
+ * The implementation uses array lists as collections, so duplicate values are permitted.
+ * It is safe to cast the (collection) values to {@link java.util.List}.
  */
-public final class MultiHashSetMap<K, V> extends AbstractMultiHashMap<K, V>
+public final class MultiHashMap<K, V> extends AbstractMultiHashMap<K, V>
 {
     // ---------------------------------------------------------------------------------------------
 
-    @Override HashSet<V> new_collection()
+    @Override ArrayList<V> new_collection()
     {
-        return new HashSet<>();
+        return new ArrayList<>();
     }
 
     // ---------------------------------------------------------------------------------------------
 
     @Override Collection<V> empty_collection ()
     {
-        return Collections.emptySet();
+        return Collections.emptyList();
     }
 
     // ---------------------------------------------------------------------------------------------

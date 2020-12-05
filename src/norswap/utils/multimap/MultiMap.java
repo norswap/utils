@@ -1,4 +1,4 @@
-package norswap.utils.multi;
+package norswap.utils.multimap;
 
 import norswap.utils.Pair;
 import java.util.ArrayList;
