@@ -2,7 +2,7 @@ package norswap.utils;
 
 import java.util.function.Predicate;
 
-import static norswap.utils.Util.attempt;
+import static norswap.utils.exceptions.Exceptions.suppress;
 
 /**
  * Utilities to work with predicates.
@@ -32,7 +32,7 @@ public final class Predicates
     public static String to_string (Predicate<?> pred)
     {
         Class<?> pred_tostring_src
-            = attempt(() -> pred.getClass().getMethod("toString").getDeclaringClass());
+            = suppress(() -> pred.getClass().getMethod("toString").getDeclaringClass());
 
         boolean overriden
             = pred != null && !pred_tostring_src.equals(Object.class);

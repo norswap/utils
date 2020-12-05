@@ -1,5 +1,6 @@
 package norswap.utils;
 
+import norswap.utils.exceptions.Exceptions;
 import java.util.List;
 import static norswap.utils.Strings.append;
 import static norswap.utils.Vanilla.pop;
@@ -29,18 +30,6 @@ public final class Util
     {
         System.err.println(message);
         System.exit(1);
-    }
-
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Attempt to run {@code supplier}, wrapping any exceptions it might throw in a
-     * {@link RuntimeException}.
-     */
-    public static <T> T attempt (ThrowingSupplier<T> supplier)
-    {
-        try { return supplier.get(); }
-        catch (Exception e) { throw new RuntimeException(e); }
     }
 
     // ---------------------------------------------------------------------------------------------

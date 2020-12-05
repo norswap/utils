@@ -116,10 +116,10 @@ public final class Strings
      * Adds the string representation of items in {@code items} to {@code b}, separting them
      * by the separator {@code sep}.
      */
-    public static <T> void separated(StringBuilder b, String sep, T... items)
+    public static void separated(StringBuilder b, String sep, Object... items)
     {
         int length = b.length();
-        for (T item: items)
+        for (Object item: items)
             b.append(item).append(sep);
         if (b.length() > length)
             pop(b, sep.length());
