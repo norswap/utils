@@ -28,6 +28,12 @@
 - `ThrowingRunnable`: Just like `java.lang.Runnable`, but allowd to throw exceptions.
 - `Exceptions`: Utility functions dealing with exceptions and stack traces.
 
+## Reflection
+- `Reflection`: Reflection-related utilities.
+- `Subtyping`: Enables subtyping checks between instances of `java.lang.reflect.Type`.
+- `GenericType`: Minimal implementation of `java.lang.reflect.ParameterizedType`,
+  useful with `Subtyping`.
+
 ## Data Structures
 
 - `ArrayStack`: A stack implementation that extends ArrayList.
