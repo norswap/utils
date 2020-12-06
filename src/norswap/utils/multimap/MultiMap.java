@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 /**
  * An extension of a regular {@code K -> Collection<V>} map to enable/improve its use as a multimap:
- * a map from  {@link K} to a collection of invididual {@link V} values.
+ * a map from  {@code K} to a collection of invididual {@code V} values.
  */
 public interface MultiMap<K, V> extends Map<K, Collection<V>>
 {

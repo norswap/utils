@@ -134,7 +134,7 @@ public final class Strings
      * @param si controls whether SI (international system) units are used or not. In SI, a KiB is
      * 1000B, whereas in the traditional system, a KB is 1024B.
      *
-     * @author https://stackoverflow.com/a/3758880/298664
+     * Source: https://stackoverflow.com/a/3758880/298664
      */
     public static String human_friendly_byte_count (long bytes, boolean si)
     {

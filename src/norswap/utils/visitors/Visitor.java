@@ -14,7 +14,7 @@ import static norswap.utils.Util.cast;
  * values that have that specific class — inheritance does not enter into account when dispatching
  * the operation.
  *
- * <p>The operation is invoked by calling {@link #accept(T)}.
+ * <p>The operation is invoked by calling {@link #accept}.
  *
  * <p>If a specialization for the class of the value does not exist, a fallback specialization can
  * be called. The fallback specialization is registered by calling {@link

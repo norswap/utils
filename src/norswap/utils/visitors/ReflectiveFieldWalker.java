@@ -15,7 +15,7 @@ import static norswap.utils.reflection.Reflection.try_handles;
 
 /**
  * Implementation of {@link Walker} where the children of a node of type {@code T} are
- * take to be all accessible fields of the node whose value is assignable to {@link T}.
+ * take to be all accessible fields of the node whose value is assignable to {@code T}.
  *
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * accessor methods instead of fields.

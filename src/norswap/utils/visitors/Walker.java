@@ -38,11 +38,11 @@ import static norswap.utils.visitors.WalkVisitType.*;
  * #register_fallback(BiConsumer)} (generic fallback). If a fallback can't be found, an {@link
  * IllegalArgumentException} is thrown.
  *
- * <p>The class offers the {@link #walk(T)} method, which calls the visitor operation on the node
+ * <p>The class offers the {@link #walk} method, which calls the visitor operation on the node
  * (possibly multiple times, see below) and recursively calls itself on the children of the
  * node.
  *
- * <p>To use this class, you must subclass it and override the {@link #children(T)} method to
+ * <p>To use this class, you must subclass it and override the {@link #children} method to
  * instruct the walker how to find the children of a node.
  *
  * <p>Specialization must not call the {@link #walk} method of their own walker!

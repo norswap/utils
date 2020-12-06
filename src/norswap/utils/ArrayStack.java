@@ -47,7 +47,7 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * Adds all the elements at the end of the list.
      *
-     * <p>Identical to {@link #push(T[])}.
+     * <p>Identical to {@link #push(Object[])}.
      */
     @SafeVarargs
     public final void add (T... elements) {
@@ -59,7 +59,7 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * Pushes {@code item} at the top of the stack.
      *
-     * <p>Identical to {@link #add(T)}
+     * <p>Identical to {@link #add(Object)}
      */
     public void push (T item) {
         add(item);
@@ -70,7 +70,7 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * Pushes the elements at the top of the stack.
      *
-     * <p>Identical to {@link #add(T[])}.
+     * <p>Identical to {@link #add(Object[])}.
      */
     @SafeVarargs
     public final void push (T... elements) {

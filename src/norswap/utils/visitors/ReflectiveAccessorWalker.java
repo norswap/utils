@@ -15,7 +15,7 @@ import static norswap.utils.reflection.Reflection.try_handles;
 
 /**
  * Implementation of {@link Walker} where the children of a node of type {@code T} are take to be
- * all accessible zero-argument methods of the node whose return value is assignable to {@link T}.
+ * all accessible zero-argument methods of the node whose return value is assignable to {@code T}.
  *
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * fields instead of accessor methods.
