@@ -20,7 +20,7 @@ import static norswap.utils.reflection.Reflection.try_handles;
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * accessor methods instead of fields.
  */
-public final class ReflectiveFieldWalker<T, CTX> extends Walker<T, CTX>
+public final class ReflectiveFieldWalker<T> extends Walker<T>
 {
     // ---------------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ public final class ReflectiveFieldWalker<T, CTX> extends Walker<T, CTX>
     /**
      * @param node_type The class for the node type being walked.
      */
-    public ReflectiveFieldWalker (Class<? extends T> node_type, VisitType... visit_types) {
+    public ReflectiveFieldWalker (Class<? extends T> node_type, WalkVisitType... visit_types) {
         super(visit_types);
         this.node_type = node_type;
     }

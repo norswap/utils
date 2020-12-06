@@ -1,9 +1,11 @@
 package norswap.utils.visitors;
 
 /**
- * Types of visit performed by a {@link Walker}.
+ * Types of visit operations that can be performed by a {@link Walker}.
+ *
+ * <p>Multiple types of visit can be performed by a sing {@link Walker}.
  */
-public enum VisitType {
+public enum WalkVisitType {
     /**
      * Call the visitor operation before visiting the node's children.
      */
