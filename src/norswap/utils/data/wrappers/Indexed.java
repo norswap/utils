@@ -1,4 +1,4 @@
-package norswap.utils;
+package norswap.utils.data.wrappers;
 
 import java.util.Objects;
 

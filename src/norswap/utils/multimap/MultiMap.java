@@ -1,6 +1,6 @@
 package norswap.utils.multimap;
 
-import norswap.utils.Pair;
+import norswap.utils.data.wrappers.Pair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;

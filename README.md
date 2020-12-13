@@ -23,7 +23,7 @@ A collection of Java (8+) utilities.
 - `Util`: Miscellaneous utility functions.
 - `NArrays`: Utility functions dealing with arrays. 
 
-## Data Structures
+## Data Structures (`data.structures` package)
 
 - `ArrayStack`: A stack implementation that extends ArrayList.
 - `ArrayListInt`: Pendant of `ArrayList` specialized for `int`, with a small stack interface.
@@ -31,7 +31,7 @@ A collection of Java (8+) utilities.
 - `multimap` (package): defines the `MultiMap<K, V>` that extends `Map<K, Collection<V>>`, as well
   as implementations thereof. A multimap is a map where multiple values can be bound to a single key.
 
-## Misc
+## Data Wrappers (`data.wrappers` package)
 
 - `Indexed`: A pair made out of an integer and a value.
 - `Pair`: A simple type for a pair of values.

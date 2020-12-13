@@ -1,5 +1,7 @@
-package norswap.utils;
+package norswap.utils.data.structures;
 
+import norswap.utils.NArrays;
+import norswap.utils.Strings;
 import java.util.NoSuchElementException;
 
 /**

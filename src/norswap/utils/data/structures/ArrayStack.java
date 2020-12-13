@@ -1,4 +1,4 @@
-package norswap.utils;
+package norswap.utils.data.structures;
 
 import java.util.ArrayList;
 import java.util.Arrays;
