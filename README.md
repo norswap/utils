@@ -1,10 +1,9 @@
 # norswap.utils
 
-[![jitpack](https://jitpack.io/v/norswap/norswap-utils.svg)][jitpack]
-
-- [Maven Dependency][jitpack]
+- [Maven Dependency][gh-package] ([mirror][jitpack])
 - [Javadoc][javadoc]
 
+[gh-package]: https://github.com/norswap/norswap-utils/packages/
 [jitpack]: https://jitpack.io/#norswap/norswap-utils
 [javadoc]: https://jitpack.io/com/github/norswap/norswap-utils/-SNAPSHOT/javadoc/
 
