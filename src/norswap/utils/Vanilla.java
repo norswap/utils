@@ -1,6 +1,7 @@
 package norswap.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static norswap.utils.Util.cast;
 
 /**
@@ -78,6 +80,78 @@ public final class Vanilla
     {
         ArrayList<T> out = new ArrayList<>(items.length);
         Collections.addAll(out, items);
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return a fixed-size list that contains all items in the array from index {@code start} and
+     * onwards. If you need a list that can grow use {@link #arraylist_slice}.
+     */
+    public static <T> List<T> list_slice(T[] items, int start)
+    {
+        if (start < 0 || start > items.length)
+            throw new IndexOutOfBoundsException(
+                format("start (%s) > items.length (%s)", start, items.length));
+        return Arrays.asList(Arrays.copyOf(items, items.length - start));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return an array list  that contains all items in the array from index {@code start} and
+     * onwards. If you don't need the list to grow, use {@link #list_slice}.
+     */
+    public static <T> ArrayList<T> arraylist_slice (T[] items, int start)
+    {
+        if (start < 0 || start > items.length)
+            throw new IndexOutOfBoundsException(
+                    format("start (%s) > items.length (%s)", start, items.length));
+        ArrayList <T> out = new ArrayList<>(items.length - start);
+        out.addAll(Arrays.asList(items).subList(start, items.length));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return a fixed-size list that contains all items in the array in the {@code [start, end[}
+     * range. If you need a list that can grow use {@link #arraylist_slice(Object[], int, int)}.
+     *
+     * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
+     * as {@code items.length - 1}.
+     */
+    public static <T> List<T> list_slice (T[] items, int start, int end)
+    {
+        if (end < 0) end = items.length + end;
+
+        if (start < 0 || end < 0 || end > items.length || start > end)
+            throw new IndexOutOfBoundsException(
+                    format("invalid range [%s, %s[ for items.length (%s)", start, end, items.length));
+
+        return Arrays.asList(Arrays.copyOfRange(items, start, end));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return an array list  that contains all items in the array in the {@code [start, end[} range.
+     * If you don't need the list to grow, use {@link #list_slice(Object[], int, int)}.
+     *
+     * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
+     * as {@code items.length - 1}.
+     */
+    public static <T> ArrayList<T> arraylist_slice (T[] items, int start, int end)
+    {
+        if (end < 0) end = items.length + end;
+
+        if (start < 0 || end < 0 || end > items.length || start > end)
+            throw new IndexOutOfBoundsException(
+                    format("invalid range [%s, %s[ for items.length (%s)", start, end, items.length));
+
+        ArrayList <T> out = new ArrayList<>(end - start);
+        out.addAll(Arrays.asList(items).subList(start, end));
         return out;
     }
 
@@ -160,7 +234,7 @@ public final class Vanilla
         for (Object item: items)
         {
             /**/ if (item instanceof Object[])
-                add_array(col, (Object[]) items);
+                add_array(col, items);
             else if (item instanceof Iterable<?>)
                 add_all(col, cast(item));
             else if (item instanceof Enumeration<?>)
