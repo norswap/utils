@@ -116,13 +116,26 @@ public final class Strings
      * Adds the string representation of items in {@code items} to {@code b}, separting them
      * by the separator {@code sep}.
      */
-    public static void separated(StringBuilder b, String sep, Object... items)
+    public static void separated (StringBuilder b, String sep, Object... items)
     {
         int length = b.length();
         for (Object item: items)
             b.append(item).append(sep);
         if (b.length() > length)
             pop(b, sep.length());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Adds the string representation of items in {@code items} to {@code b}, separting them
+     * by the separator {@code sep}.
+     *
+     * <p>Identical to {@link #separated}, but fixes pesky Java warnings when passing an array
+     * directly.
+     */
+    public static void sep_array (StringBuilder b, String sep, Object[] items) {
+        separated(b, sep, items);
     }
 
     // ---------------------------------------------------------------------------------------------
