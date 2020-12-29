@@ -35,6 +35,17 @@ public final class Strings
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Returns a string that repeats the string {@code str}, {@code n} times.
+     *
+     * <p>In Java 11+, there is {@code String#repeat(int)} for this instead.
+     */
+    public static String repeat (String str, int n) {
+        return new String(new char[n]).replace("\0", str);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns an array of strings representing the individual lines in {@code string}. Each newline
      * character, as well as the end of the string, cause a new (possibly empty) line to be created.
      * The newlines characters are stripped from the lines.
