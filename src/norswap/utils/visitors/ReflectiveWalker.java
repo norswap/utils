@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,10 +75,13 @@ public abstract class ReflectiveWalker<T> extends Walker<T>
 
         try_handles(() -> {
             for (HandleWrapper wrap: handles)
-                if (wrap.collection)
-                    children.addAll(cast(wrap.handle.invoke(node)));
-                else
-                    children.add(cast(wrap.handle.invoke(node)));
+                if (wrap.collection) {
+                    Collection<T> items = cast(wrap.handle.invoke(node));
+                    if (items != null) children.addAll(items);
+                } else {
+                    T item = cast(wrap.handle.invoke(node));
+                    if (item != null) children.add(item);
+                }
         });
 
         return children;
