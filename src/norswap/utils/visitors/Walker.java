@@ -72,7 +72,7 @@ public abstract class Walker<T>
 
     // ---------------------------------------------------------------------------------------------
 
-    private final static class Specializations<T>
+    private final class Specializations
     {
         Consumer<? super T> pre;
         Consumer<? super T> post;
@@ -93,8 +93,12 @@ public abstract class Walker<T>
                     break;
                 }
 
-            if (all != null) all.accept(visit_type, node);
-            else throw new IllegalArgumentException(String.format(
+            if (all != null)
+                all.accept(visit_type, node);
+            else if (this != fallback_specializations)
+                fallback_specializations.call(visit_type, node);
+            else
+                throw new IllegalArgumentException(String.format(
                     "no valid specialization found for node: %s (visit type: %s)",
                     node, visit_type));
         }
@@ -114,9 +118,9 @@ public abstract class Walker<T>
 
     // ---------------------------------------------------------------------------------------------
 
-    private final HashMap<Class<? extends T>, Specializations<T>> dispatch = new HashMap<>();
+    private final HashMap<Class<? extends T>, Specializations> dispatch = new HashMap<>();
 
-    private final Specializations<T> fallback_specializations = new Specializations<>();
+    private final Specializations fallback_specializations = new Specializations();
 
     private WalkVisitType visit_type;
 
@@ -131,7 +135,7 @@ public abstract class Walker<T>
 
     private void visit (T node)
     {
-        Specializations<T> specializations = dispatch.get(node.getClass());
+        Specializations specializations = dispatch.get(node.getClass());
         if (specializations == null) specializations = fallback_specializations;
         specializations.call(visit_type, node);
     }
@@ -171,8 +175,8 @@ public abstract class Walker<T>
     public <S extends T> Walker<T> register
             (Class<S> klass, WalkVisitType visit_type, Consumer<? super S> specialization)
     {
-        Specializations<T> specializations =
-                dispatch.computeIfAbsent(klass, k -> new Specializations<>());
+        Specializations specializations =
+                dispatch.computeIfAbsent(klass, k -> new Specializations());
         if (specializations.all != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic specializations.");
         specializations.set(visit_type, cast(specialization));
@@ -188,7 +192,7 @@ public abstract class Walker<T>
     public <S extends T> Walker<T> register
             (Class<S> klass, BiConsumer<WalkVisitType, ? super S> specialization)
     {
-        Specializations<T> s = dispatch.computeIfAbsent(klass, k -> new Specializations<>());
+        Specializations s = dispatch.computeIfAbsent(klass, k -> new Specializations());
         if (s.pre != null || s.post != null || s.in != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic specializations.");
         s.all = cast(specialization);
@@ -216,7 +220,7 @@ public abstract class Walker<T>
      */
     public Walker<T> register_fallback (BiConsumer<WalkVisitType, ? super T> fallback)
     {
-        Specializations<T> s = fallback_specializations;
+        Specializations s = fallback_specializations;
         if (s.pre != null || s.post != null || s.in != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic fallbacks.");
         s.all = fallback;
