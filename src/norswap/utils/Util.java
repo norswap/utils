@@ -2,6 +2,8 @@ package norswap.utils;
 
 import norswap.utils.exceptions.Exceptions;
 import java.util.List;
+
+import static java.lang.String.format;
 import static norswap.utils.Strings.append;
 import static norswap.utils.Vanilla.pop;
 
@@ -19,6 +21,21 @@ public final class Util
     {
         // noinspection unchecked
         return (T) obj;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Casts {@code value} to type {@code T} if possible, otherwise throws an {@link Error}.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T>  T cast (Object value, Class<T> klass)
+    {
+        if (klass.isInstance(value)) return (T) value;
+
+        throw new Error(format("expected a value of type %s, but received value <%s> (of type %s)",
+            klass, value, value == null ? "null" : value.getClass()));
+
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -74,7 +91,7 @@ public final class Util
             throws AssertionError
     {
         if (!condition)
-            throw Exceptions.trim_stack_trace(1, new AssertionError(String.format(format, args)));
+            throw Exceptions.trim_stack_trace(1, new AssertionError(format(format, args)));
     }
 
     // ---------------------------------------------------------------------------------------------
