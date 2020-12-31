@@ -28,14 +28,14 @@ import static norswap.utils.visitors.WalkVisitType.*;
  *
  * <p>It's also possible to specify a specialization applicable for all visit types. In this case,
  * the {@link WalkVisitType} will be passed as a parameter to the specialization, which has type
- * {@link BiConsumer}{@code <WalkVisitType, T>}. Use method {@link #register_fallback( BiConsumer)}
+ * {@link BiConsumer}{@code <WalkVisitType, T>}. Use method {@link #registerFallback( BiConsumer)}
  * for this. If you choose to use this modality for a given class, you must not also use per-visit
  * specialization for that class!
  *
  * <p>If a specialization for a (class, visit type) combination does not exist, a fallback
  * specialization can be called. Fallback specializations are registered by calling {@link
- * #register_fallback(WalkVisitType, Consumer)} (per-visit-type fallbacks) and {@link
- * #register_fallback(BiConsumer)} (generic fallback). If a fallback can't be found, an {@link
+ * #registerFallback(WalkVisitType, Consumer)} (per-visit-type fallbacks) and {@link
+ * #registerFallback(BiConsumer)} (generic fallback). If a fallback can't be found, an {@link
  * IllegalArgumentException} is thrown.
  *
  * <p>The class offers the {@link #walk} method, which calls the visitor operation on the node
@@ -52,22 +52,22 @@ public abstract class Walker<T>
     // ---------------------------------------------------------------------------------------------
 
     /** Does this walker perform pre-visits? ({@link WalkVisitType#PRE_VISIT}) */
-    public final boolean pre_visit;
+    public final boolean preVisit;
     /** Does this walker perform post-visits? ({@link WalkVisitType#POST_VISIT}) */
-    public final boolean post_visit;
+    public final boolean postVisit;
     /** Does this walker perform in-visits? ({@link WalkVisitType#IN_VISIT}) */
-    public final boolean in_visit;
+    public final boolean inVisit;
 
     // ---------------------------------------------------------------------------------------------
 
-    protected Walker (WalkVisitType... visit_types)
+    protected Walker (WalkVisitType... visitTypes)
     {
-        if (visit_types.length == 0)
+        if (visitTypes.length == 0)
             throw new IllegalArgumentException("no visit types specified");
 
-        this.pre_visit  = NArrays.contains(visit_types, PRE_VISIT);
-        this.post_visit = NArrays.contains(visit_types, POST_VISIT);
-        this.in_visit   = NArrays.contains(visit_types, IN_VISIT);
+        this.preVisit = NArrays.contains(visitTypes, PRE_VISIT);
+        this.postVisit = NArrays.contains(visitTypes, POST_VISIT);
+        this.inVisit = NArrays.contains(visitTypes, IN_VISIT);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -79,9 +79,9 @@ public abstract class Walker<T>
         Consumer<? super T> in;
         BiConsumer<WalkVisitType, ? super T> all;
 
-        void call (WalkVisitType visit_type, T node)
+        void call (WalkVisitType visitType, T node)
         {
-            switch (visit_type) {
+            switch (visitType) {
                 case PRE_VISIT:
                     if (pre != null)  { pre.accept(node);  return; }
                     break;
@@ -94,18 +94,18 @@ public abstract class Walker<T>
                 }
 
             if (all != null)
-                all.accept(visit_type, node);
-            else if (this != fallback_specializations)
-                fallback_specializations.call(visit_type, node);
+                all.accept(visitType, node);
+            else if (this != fallbackSpecializations)
+                fallbackSpecializations.call(visitType, node);
             else
                 throw new IllegalArgumentException(String.format(
                     "no valid specialization found for node: %s (visit type: %s)",
-                    node, visit_type));
+                    node, visitType));
         }
 
-        void set (WalkVisitType visit_type, Consumer<? super T> specialization)
+        void set (WalkVisitType visitType, Consumer<? super T> specialization)
         {
-            switch (visit_type) {
+            switch (visitType) {
                 case PRE_VISIT:
                     pre = specialization;  break;
                 case POST_VISIT:
@@ -120,9 +120,9 @@ public abstract class Walker<T>
 
     private final HashMap<Class<? extends T>, Specializations> dispatch = new HashMap<>();
 
-    private final Specializations fallback_specializations = new Specializations();
+    private final Specializations fallbackSpecializations = new Specializations();
 
-    private WalkVisitType visit_type;
+    private WalkVisitType visitType;
 
     // ---------------------------------------------------------------------------------------------
 
@@ -136,8 +136,8 @@ public abstract class Walker<T>
     private void visit (T node)
     {
         Specializations specializations = dispatch.get(node.getClass());
-        if (specializations == null) specializations = fallback_specializations;
-        specializations.call(visit_type, node);
+        if (specializations == null) specializations = fallbackSpecializations;
+        specializations.call(visitType, node);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -147,23 +147,23 @@ public abstract class Walker<T>
      */
     public void walk (T node)
     {
-        if (pre_visit) {
-            visit_type = PRE_VISIT;
+        if (preVisit) {
+            visitType = PRE_VISIT;
             visit(node);
         }
 
         boolean first = true;
         for (T child: children(node)) {
-            if (in_visit && !first) {
-                visit_type = IN_VISIT;
+            if (inVisit && !first) {
+                visitType = IN_VISIT;
                 visit(node);
             } else {
                 first = false;
             }
             walk(child);
         }
-        if (post_visit) {
-            visit_type = POST_VISIT;
+        if (postVisit) {
+            visitType = POST_VISIT;
             visit(node);
         }
     }
@@ -173,13 +173,13 @@ public abstract class Walker<T>
      * Register a specialization for the given visit type and the given class.
      */
     public <S extends T> Walker<T> register
-            (Class<S> klass, WalkVisitType visit_type, Consumer<? super S> specialization)
+            (Class<S> klass, WalkVisitType visitType, Consumer<? super S> specialization)
     {
         Specializations specializations =
                 dispatch.computeIfAbsent(klass, k -> new Specializations());
         if (specializations.all != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic specializations.");
-        specializations.set(visit_type, cast(specialization));
+        specializations.set(visitType, cast(specialization));
         return this;
     }
 
@@ -205,11 +205,11 @@ public abstract class Walker<T>
      * Register the fallback specialization for all visit types (the visit type will be supplied to
      * the specialization as first parameter).
      */
-    public Walker<T> register_fallback (WalkVisitType visit_type, Consumer<? super T> fallback)
+    public Walker<T> registerFallback (WalkVisitType visitType, Consumer<? super T> fallback)
     {
-        if (fallback_specializations.all != null)
+        if (fallbackSpecializations.all != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic fallbacks.");
-        fallback_specializations.set(visit_type, fallback);
+        fallbackSpecializations.set(visitType, fallback);
         return this;
     }
 
@@ -218,9 +218,9 @@ public abstract class Walker<T>
     /**
      * Register the fallback specialization for the given visit type and the given class.
      */
-    public Walker<T> register_fallback (BiConsumer<WalkVisitType, ? super T> fallback)
+    public Walker<T> registerFallback (BiConsumer<WalkVisitType, ? super T> fallback)
     {
-        Specializations s = fallback_specializations;
+        Specializations s = fallbackSpecializations;
         if (s.pre != null || s.post != null || s.in != null)
             throw new IllegalStateException("Trying to mix per-visit-type and generic fallbacks.");
         s.all = fallback;

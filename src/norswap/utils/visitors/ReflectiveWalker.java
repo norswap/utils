@@ -15,10 +15,10 @@ import static norswap.utils.reflection.Reflection.try_handles;
  * Abstract class for the implementation of a {@link Walker} that determines the children
  * of a node via (fast) reflection.
  *
- * <p>Subclasses must override the {@link #handles_for(Class)} to return a list of {@link
+ * <p>Subclasses must override the {@link #handlesFor(Class)} to return a list of {@link
  * HandleWrapper}. Each wrapper contains a {@link MethodHandle} which either returns an object of
  * type {@code T}, or a collection of items of type {@code T} ({@link HandleWrapper#collection}
- * {@code == true}). The class passed to {@code #handles_for} is a subclass of {@code T}. The walker
+ * {@code == true}). The class passed to {@link #handlesFor} is a subclass of {@code T}. The walker
  * will walk over the elements in the iteration order of the list (similarly, for handles returning
  * collections, the iteration order is used).
  *
@@ -31,7 +31,7 @@ public abstract class ReflectiveWalker<T> extends Walker<T>
 
     /**
      * Use this to obtain {@link MethodHandle} instances in the implementation of {@link
-     * #handles_for(Class)}.
+     * #handlesFor(Class)}.
      */
     protected static final Lookup lookup = MethodHandles.lookup();
 
@@ -41,20 +41,20 @@ public abstract class ReflectiveWalker<T> extends Walker<T>
      * The class for the common supertype of nodes to be visited by this walker.
      */
 
-    public final Class<? extends T> node_type;
+    public final Class<? extends T> nodeType;
 
     // ---------------------------------------------------------------------------------------------
 
-    private final HashMap<Class<? extends T>, List<HandleWrapper>> class_data = new HashMap<>();
+    private final HashMap<Class<? extends T>, List<HandleWrapper>> classData = new HashMap<>();
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @param node_type The class for the node type being walked.
+     * @param nodeType The class for the node type being walked.
      */
-    public ReflectiveWalker (Class<? extends T> node_type, WalkVisitType... visit_types) {
-        super(visit_types);
-        this.node_type = node_type;
+    public ReflectiveWalker (Class<? extends T> nodeType, WalkVisitType... visitTypes) {
+        super(visitTypes);
+        this.nodeType = nodeType;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -62,14 +62,14 @@ public abstract class ReflectiveWalker<T> extends Walker<T>
     /**
      * See {@link ReflectiveWalker}.
      */
-    abstract List<HandleWrapper> handles_for(Class<? extends T> klass);
+    abstract List<HandleWrapper> handlesFor (Class<? extends T> klass);
 
     // ---------------------------------------------------------------------------------------------
 
     @Override public Iterable<T> children (T node)
     {
-        List<HandleWrapper> handles = class_data
-                .computeIfAbsent(cast(node.getClass()), this::handles_for);
+        List<HandleWrapper> handles = classData
+                .computeIfAbsent(cast(node.getClass()), this::handlesFor);
 
         ArrayList<T> children = new ArrayList<>(handles.size());
 

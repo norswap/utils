@@ -20,24 +20,24 @@ public final class ReflectiveFieldWalker<T> extends ReflectiveWalker<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @param node_type The class for the node type being walked.
+     * @param nodeType The class for the node type being walked.
      */
-    public ReflectiveFieldWalker (Class<? extends T> node_type, WalkVisitType... visit_types) {
-        super(node_type, visit_types);
+    public ReflectiveFieldWalker (Class<? extends T> nodeType, WalkVisitType... visitTypes) {
+        super(nodeType, visitTypes);
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public List<HandleWrapper> handles_for (Class<? extends T> klass)
+    @Override public List<HandleWrapper> handlesFor (Class<? extends T> klass)
     {
         ArrayList<HandleWrapper> list = new ArrayList<>();
         try {
             for (Field field: klass.getFields())
             {
-                Type field_type = field.getGenericType();
-                if (Subtyping.check(field_type, node_type))
+                Type fieldType = field.getGenericType();
+                if (Subtyping.check(fieldType, nodeType))
                     list.add(new HandleWrapper(lookup.unreflectGetter(field), false));
-                else if (Subtyping.check(field_type, new GenericType(null, Collection.class, node_type)))
+                else if (Subtyping.check(fieldType, new GenericType(null, Collection.class, nodeType)))
                     list.add(new HandleWrapper(lookup.unreflectGetter(field), true));
             }
         } catch (IllegalAccessException e) {

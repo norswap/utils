@@ -18,7 +18,7 @@ import static norswap.utils.Util.cast;
  *
  * <p>If a specialization for the class of the value does not exist, a fallback specialization can
  * be called. The fallback specialization is registered by calling {@link
- * #register_fallback(Consumer)}. If not supplied, an {@link IllegalArgumentException} is thrown.
+ * #registerFallback(Consumer)}. If not supplied, an {@link IllegalArgumentException} is thrown.
  *
  * <p>NOTE: I choose not to use a function type instead of a consumer. Setting a return type is
  * awkward when dealing with function that do not return anything (leading to the use of {@link
@@ -40,7 +40,7 @@ public final class Visitor<T> implements Consumer<T>
     /** Map from classes to specializations.*/
     private final HashMap<Class<? extends T>, Consumer<? super T>> dispatch = new HashMap<>();
 
-    private Consumer<? super T> fallback_specialization = null;
+    private Consumer<? super T> fallbackSpecialization = null;
 
     // ---------------------------------------------------------------------------------------------
 
@@ -51,9 +51,9 @@ public final class Visitor<T> implements Consumer<T>
     {
         Consumer<?> action = dispatch.get(value.getClass());
         if (action == null) {
-            if (fallback_specialization == null)
+            if (fallbackSpecialization == null)
                 throw new IllegalArgumentException("no fallback specified for " + this);
-            fallback_specialization.accept(value);
+            fallbackSpecialization.accept(value);
         }
         else action.accept(cast(value));
     }
@@ -76,9 +76,9 @@ public final class Visitor<T> implements Consumer<T>
     /**
      * Register the fallback specialization.
      */
-    public Visitor<T> register_fallback (Consumer<? super T> fallback)
+    public Visitor<T> registerFallback (Consumer<? super T> fallback)
     {
-        this.fallback_specialization = fallback;
+        this.fallbackSpecialization = fallback;
         return this;
     }
 
