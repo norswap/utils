@@ -90,15 +90,13 @@ public final class ArrayStack<T> extends ArrayList<T>
 
     // ---------------------------------------------------------------------------------------------
 
-    private String amt_oob_msg (int n)
-    {
+    private String amountOutOfBoundsMessage (int n) {
         return "Amount [" + n + "invalid for stack size [" + size() + "]";
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    private String index_oob_msg (int i)
-    {
+    private String indexOutOfBoundsMessage (int i) {
         return "Index [" + i + "] invalid for stack size [" + size() + "]";
     }
 
@@ -112,7 +110,8 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public List<T> top (int n)
     {
-        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        if (n < 0 || size() < n)
+            throw new IndexOutOfBoundsException(amountOutOfBoundsMessage(n));
         return subList(size() - n, size());
     }
 
@@ -126,7 +125,8 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public List<T> from (int index)
     {
-        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
+        if (index < 0 || size() < index)
+            throw new IndexOutOfBoundsException(indexOutOfBoundsMessage(index));
         return subList(index, size());
     }
 
@@ -138,9 +138,10 @@ public final class ArrayStack<T> extends ArrayList<T>
      * @throws IndexOutOfBoundsException @throws IndexOutOfBoundsException if {@code n} is outside
      * {@code [0, size()]}, in which case no elements are removed.
      */
-    public void remove_top (int n)
+    public void removeTop (int n)
     {
-        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        if (n < 0 || size() < n)
+            throw new IndexOutOfBoundsException(amountOutOfBoundsMessage(n));
         top(n).clear();
     }
 
@@ -154,7 +155,8 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public void truncate (int index)
     {
-        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
+        if (index < 0 || size() < index)
+            throw new IndexOutOfBoundsException(indexOutOfBoundsMessage(index));
         from(index).clear();
     }
 
@@ -167,7 +169,8 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public T pop()
     {
-        if (isEmpty()) throw new NoSuchElementException();
+        if (isEmpty())
+            throw new NoSuchElementException();
         return remove(size() - 1);
     }
 
@@ -175,16 +178,17 @@ public final class ArrayStack<T> extends ArrayList<T>
 
     /**
      * Removes and returns the {@code n} elements at the top of the stack, in an array created by
-     * {@code mk_array}.
+     * {@code makeArray}.
      *
      * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()]}, in which case
      * no elements are removed.
      */
-    public T[] pop (int n, IntFunction<T[]> mk_array)
+    public T[] pop (int n, IntFunction<T[]> makeArray)
     {
-        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
+        if (n < 0 || size() < n)
+            throw new IndexOutOfBoundsException(amountOutOfBoundsMessage(n));
         List<T> sub = top(n);
-        T[] out = sub.toArray(mk_array.apply(n));
+        T[] out = sub.toArray(makeArray.apply(n));
         sub.clear();
         return out;
     }
@@ -193,14 +197,15 @@ public final class ArrayStack<T> extends ArrayList<T>
 
     /**
      * Removes and returns the the elements between {@code index} and the top of the stack,
-     * in an array created by {@code mk_array}.
+     * in an array created by {@code makeArray}.
      *
      * @throws IndexOutOfBoundsException if {@code index} is outside {@code [0, size()]}.
      */
-    public T[] pop_from (int index, IntFunction<T[]> mk_array)
+    public T[] popFrom (int index, IntFunction<T[]> makeArray)
     {
-        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
-        return pop(size() - index, mk_array);
+        if (index < 0 || size() < index)
+            throw new IndexOutOfBoundsException(indexOutOfBoundsMessage(index));
+        return pop(size() - index, makeArray);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -208,8 +213,7 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * Removes and returns the item at the top of the stack, or null if the stack is empty.
      */
-    public T poll()
-    {
+    public T poll() {
         return isEmpty() ? null : remove(size() - 1);
     }
 
@@ -222,7 +226,8 @@ public final class ArrayStack<T> extends ArrayList<T>
      */
     public T peek()
     {
-        if (isEmpty()) throw new NoSuchElementException();
+        if (isEmpty())
+            throw new NoSuchElementException();
         return get(size() - 1);
     }
 
@@ -230,28 +235,30 @@ public final class ArrayStack<T> extends ArrayList<T>
 
     /**
      * @return the {@code n} elements at the top of the stack, in an array created by {@code
-     * mk_array}.
+     * makeArray}.
      *
      * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()]}.
      */
-    public T[] peek (int n, IntFunction<T[]> mk_array)
+    public T[] peek (int n, IntFunction<T[]> makeArray)
     {
-        if (n < 0 || size() < n) throw new IndexOutOfBoundsException(amt_oob_msg(n));
-        return top(n).toArray(mk_array.apply(n));
+        if (n < 0 || size() < n)
+            throw new IndexOutOfBoundsException(amountOutOfBoundsMessage(n));
+        return top(n).toArray(makeArray.apply(n));
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
      * @return an array containing the elements between {@code index} and the top of the stack, in
-     * an array created by {@code mk_array}.
+     * an array created by {@code makeArray}.
      *
      * @throws IndexOutOfBoundsException if {@code index} is outside {@code [0, size()]}.
      */
-    public T[] peek_from (int index, IntFunction<T[]> mk_array)
+    public T[] peekFrom (int index, IntFunction<T[]> makeArray)
     {
-        if (index < 0 || size() < index) throw new IndexOutOfBoundsException(index_oob_msg(index));
-        return peek(size() - index, mk_array);
+        if (index < 0 || size() < index)
+            throw new IndexOutOfBoundsException(indexOutOfBoundsMessage(index));
+        return peek(size() - index, makeArray);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -259,8 +266,7 @@ public final class ArrayStack<T> extends ArrayList<T>
     /**
      * @return the item at the top of the stack, or null if the stack is empty.
      */
-    public T snoop()
-    {
+    public T snoop() {
         return isEmpty() ? null : get(size() - 1);
     }
 
@@ -271,9 +277,10 @@ public final class ArrayStack<T> extends ArrayList<T>
      *
      * @throws IndexOutOfBoundsException if {@code n} is outside {@code [0, size()-1]}.
      */
-    public T peek_back (int n)
+    public T peekBack (int n)
     {
-        if (n < 0 || size() <= n) throw new IndexOutOfBoundsException(index_oob_msg(n));
+        if (n < 0 || size() <= n)
+            throw new IndexOutOfBoundsException(indexOutOfBoundsMessage(n));
         return get(size() - 1 - n);
     }
 
@@ -283,8 +290,7 @@ public final class ArrayStack<T> extends ArrayList<T>
      * @return the item that is {@code n} elements below the top of the stack (0 = top), or null
      * if the stack does not have that many elements or {@code n} is negative.
      */
-    public T snoop_back (int n)
-    {
+    public T snoopBack (int n) {
         return n < 0 || size() <= n ? null : get(size() - 1 - n);
     }
 
