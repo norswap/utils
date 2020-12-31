@@ -29,13 +29,13 @@ public final class Predicates
      * Returns a string representation of a predicate, which is either the result of its
      * {@link #toString()} method if the predicate class overrides it, or "pred" otherwise.
      */
-    public static String to_string (Predicate<?> pred)
+    public static String toString (Predicate<?> pred)
     {
-        Class<?> pred_tostring_src
+        Class<?> predTostringSrc
             = suppress(() -> pred.getClass().getMethod("toString").getDeclaringClass());
 
         boolean overriden
-            = pred != null && !pred_tostring_src.equals(Object.class);
+            = pred != null && !predTostringSrc.equals(Object.class);
 
         return overriden
             ? pred.toString()

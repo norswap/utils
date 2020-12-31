@@ -91,7 +91,7 @@ public final class Util
             throws AssertionError
     {
         if (!condition)
-            throw Exceptions.trim_stack_trace(1, new AssertionError(format(format, args)));
+            throw Exceptions.trimStackTrace(1, new AssertionError(format(format, args)));
     }
 
     // ---------------------------------------------------------------------------------------------

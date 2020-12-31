@@ -13,7 +13,7 @@ public final class Strings
     /**
      * Returns the last character of the string, or throws an exception if the string is empty.
      */
-    public static char last_char (String string)
+    public static char lastChar (String string)
     {
         if (string.isEmpty())
             throw new IllegalArgumentException("empty string");
@@ -88,7 +88,7 @@ public final class Strings
      * understood in the sense of `lines()`, so if `string` ends with a newline, the returned string
      * will end with the prefix.
      */
-    public static String indent_except_first (String string, String prefix)
+    public static String indentExceptFirst (String string, String prefix)
     {
         String[] lines = lines(string);
         StringBuilder b = new StringBuilder();
@@ -145,7 +145,7 @@ public final class Strings
      * <p>Identical to {@link #separated}, but fixes pesky Java warnings when passing an array
      * directly.
      */
-    public static void sep_array (StringBuilder b, String sep, Object[] items) {
+    public static void sepArray (StringBuilder b, String sep, Object[] items) {
         separated(b, sep, items);
     }
 
@@ -160,7 +160,7 @@ public final class Strings
      *
      * Source: https://stackoverflow.com/a/3758880/298664
      */
-    public static String human_friendly_byte_count (long bytes, boolean si)
+    public static String humanFriendlyByteCount (long bytes, boolean si)
     {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";

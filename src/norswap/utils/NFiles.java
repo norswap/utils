@@ -55,7 +55,7 @@ public final class NFiles
      * <p>A reference to this method can be passed to {@link Files#newDirectoryStream(Path,
      * DirectoryStream.Filter)} to ignore dotfiles in a directory.
      */
-    public static boolean no_dotfiles (Path path) {
+    public static boolean noDotfiles (Path path) {
         return !path.getFileName().startsWith(".");
     }
 
