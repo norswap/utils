@@ -61,7 +61,7 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      *
      * @return The collection of values associated with the key after the operation has taken place.
      */
-    Collection<V> delete_pollute (K key, V value);
+    Collection<V> deletePollute (K key, V value);
 
     // ---------------------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      *
      * @return The collection of values associated with the key after the operation has taken place.
      */
-    Collection<V> add_all (K key, V[] values);
+    Collection<V> addAll (K key, V[] values);
 
     // ---------------------------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      *
      * @return The collection of values associated with the key after the operation has taken place.
      */
-    Collection<V> add_all (K key, Iterable<V> values);
+    Collection<V> addAll (K key, Iterable<V> values);
 
     // ---------------------------------------------------------------------------------------------
 
@@ -88,9 +88,9 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      *
      * @return The collection of values associated with the key after the operation has taken place.
      */
-    default Collection<V> add_all (K key, Collection<V> values)
+    default Collection<V> addAll (K key, Collection<V> values)
     {
-        return add_all(key, (Iterable<V>) values);
+        return addAll(key, (Iterable<V>) values);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      * Returns a flattened collection containing all the values associated with all keys in the
      * multimap.
      */
-    default Collection<V> all_values()
+    default Collection<V> allValues()
     {
         ArrayList<V> out = new ArrayList<>();
         for (Collection<V> col: values()) out.addAll(col);
@@ -109,25 +109,25 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Adds all key-value pairs from {@code single_map} into this multimap (as per {@link
+     * Adds all key-value pairs from {@code singleMap} into this multimap (as per {@link
      * #add(Object, Object)}).
      */
-    default void add (Map<K, V> single_map)
+    default void add (Map<K, V> singleMap)
     {
-        for (Entry<K, V> e: single_map.entrySet())
+        for (Entry<K, V> e: singleMap.entrySet())
             add(e.getKey(), e.getValue());
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Adds all key-value associations from {@code multi_map} into this multimap (as per {@link
-     * #add_all(Object, Collection)}. This basically merges {@code multi_map} inside the receiver.
+     * Adds all key-value associations from {@code multiMap} into this multimap (as per {@link
+     * #addAll(Object, Collection)}. This basically merges {@code multiMap} inside the receiver.
      */
-    default void add (MultiMap<K, V> multi_map)
+    default void add (MultiMap<K, V> multiMap)
     {
-        for (Entry<K, Collection<V>> e: multi_map.entrySet())
-            add_all(e.getKey(), e.getValue());
+        for (Entry<K, Collection<V>> e: multiMap.entrySet())
+            addAll(e.getKey(), e.getValue());
     }
 
     // ---------------------------------------------------------------------------------------------

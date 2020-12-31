@@ -10,18 +10,18 @@ abstract class AbstractMultiHashMap<K, V>
 {
     // ---------------------------------------------------------------------------------------------
 
-    abstract Collection<V> new_collection();
+    abstract Collection<V> newCollection();
 
     // ---------------------------------------------------------------------------------------------
 
-    abstract Collection<V> empty_collection();
+    abstract Collection<V> emptyCollection();
 
     // ---------------------------------------------------------------------------------------------
 
     @Override public Collection<V> get (Object key)
     {
         Collection<V> out = super.get(key);
-        return out == null ? empty_collection() : Collections.unmodifiableCollection(out);
+        return out == null ? emptyCollection() : Collections.unmodifiableCollection(out);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -29,14 +29,14 @@ abstract class AbstractMultiHashMap<K, V>
     @Override public Collection<V> remove (Object key)
     {
         Collection<V> out = super.remove(key);
-        return out == null ? empty_collection() : Collections.unmodifiableCollection(out);
+        return out == null ? emptyCollection() : Collections.unmodifiableCollection(out);
     }
 
     // ---------------------------------------------------------------------------------------------
 
     @Override public Collection<V> add (K key, V value)
     {
-        Collection<V> out = computeIfAbsent(key, k -> new_collection());
+        Collection<V> out = computeIfAbsent(key, k -> newCollection());
         out.add(value);
         return out;
     }
@@ -46,7 +46,7 @@ abstract class AbstractMultiHashMap<K, V>
     @Override public Collection<V> delete (K key, V value)
     {
         Collection<V> out = super.get(key);
-        if (out == null) return empty_collection();
+        if (out == null) return emptyCollection();
         out.remove(value);
         return out.isEmpty()
                 ? remove(key)
@@ -55,37 +55,37 @@ abstract class AbstractMultiHashMap<K, V>
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public Collection<V> delete_pollute (K key, V value)
+    @Override public Collection<V> deletePollute (K key, V value)
     {
         Collection<V> out = super.get(key);
-        if (out == null) return empty_collection();
+        if (out == null) return emptyCollection();
         out.remove(value);
         return Collections.unmodifiableCollection(out);
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public Collection<V> add_all (K key, V[] values)
+    @Override public Collection<V> addAll (K key, V[] values)
     {
-        Collection<V> out = computeIfAbsent(key, k -> new_collection());
+        Collection<V> out = computeIfAbsent(key, k -> newCollection());
         Collections.addAll(out, values);
         return out;
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public Collection<V> add_all (K key, Iterable<V> values)
+    @Override public Collection<V> addAll (K key, Iterable<V> values)
     {
-        Collection<V> out = computeIfAbsent(key, k -> new_collection());
+        Collection<V> out = computeIfAbsent(key, k -> newCollection());
         for (V v: values) out.add(v);
         return out;
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public Collection<V> add_all (K key, Collection<V> values)
+    @Override public Collection<V> addAll (K key, Collection<V> values)
     {
-        Collection<V> out = computeIfAbsent(key, k -> new_collection());
+        Collection<V> out = computeIfAbsent(key, k -> newCollection());
         out.addAll(values);
         return out;
     }

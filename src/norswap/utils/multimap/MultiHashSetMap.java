@@ -15,14 +15,14 @@ public final class MultiHashSetMap<K, V> extends AbstractMultiHashMap<K, V>
 {
     // ---------------------------------------------------------------------------------------------
 
-    @Override HashSet<V> new_collection()
+    @Override HashSet<V> newCollection ()
     {
         return new HashSet<>();
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override Collection<V> empty_collection ()
+    @Override Collection<V> emptyCollection ()
     {
         return Collections.emptySet();
     }

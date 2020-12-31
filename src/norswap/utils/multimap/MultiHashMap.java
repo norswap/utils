@@ -15,14 +15,14 @@ public final class MultiHashMap<K, V> extends AbstractMultiHashMap<K, V>
 {
     // ---------------------------------------------------------------------------------------------
 
-    @Override ArrayList<V> new_collection()
+    @Override ArrayList<V> newCollection ()
     {
         return new ArrayList<>();
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override Collection<V> empty_collection ()
+    @Override Collection<V> emptyCollection ()
     {
         return Collections.emptyList();
     }
