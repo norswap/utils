@@ -148,7 +148,7 @@ public final class Reflection
             }
 
             else if (typeArg instanceof TypeVariable<?>) {
-                int index = NArrays.index_of(substFrom, typeArg);
+                int index = NArrays.indexOf(substFrom, typeArg);
                 if (index < 0)
                     throw new RuntimeException("could not find type var to subtitute: " + typeArg);
                 newTypeArgs[i] = substTo[index];

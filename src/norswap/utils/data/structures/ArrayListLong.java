@@ -92,7 +92,7 @@ public final class ArrayListLong implements Cloneable
     public void add (long v)
     {
         if (array.length < size + 1)
-            array = NArrays.resize_binary_power(array, size + 1);
+            array = NArrays.resizeBinaryPower(array, size + 1);
         array[size++] = v;
     }
 
