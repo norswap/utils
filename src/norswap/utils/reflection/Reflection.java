@@ -46,41 +46,41 @@ public final class Reflection
      *
      * <p>Returns {@code null} if {@code type} represents {@code Object}.
      */
-    public static ParameterizedType actual_parameterized_supertype (ParameterizedType type)
+    public static ParameterizedType actualParameterizedSupertype (ParameterizedType type)
     {
-        Type parameterized_superclass = raw(type).getGenericSuperclass();
-        if (parameterized_superclass == null) return null;
-        return parameterized_superclass instanceof Class<?>
-            ? new GenericType(parameterized_superclass, cast(parameterized_superclass))
-            : substitute_type_vars(cast(parameterized_superclass), type);
+        Type parameterizedSuperclass = raw(type).getGenericSuperclass();
+        if (parameterizedSuperclass == null) return null;
+        return parameterizedSuperclass instanceof Class<?>
+            ? new GenericType(parameterizedSuperclass, cast(parameterizedSuperclass))
+            : substituteTypeVars(cast(parameterizedSuperclass), type);
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Same idea as {@link #actual_parameterized_supertype(ParameterizedType)} but for interfaces.
+     * Same idea as {@link #actualParameterizedSupertype(ParameterizedType)} but for interfaces.
      */
-    public static ParameterizedType[] actual_parameterized_interfaces (ParameterizedType type)
+    public static ParameterizedType[] actualParameterizedInterfaces (ParameterizedType type)
     {
-        Type[] parameterized_interface = raw(type).getGenericInterfaces();
-        return NArrays.map(parameterized_interface, new GenericType[0], iface ->
+        Type[] parameterizedInterface = raw(type).getGenericInterfaces();
+        return NArrays.map(parameterizedInterface, new GenericType[0], iface ->
             iface instanceof Class<?>
                 ? new GenericType(null, cast(iface))
-                : substitute_type_vars(cast(iface), type));
+                : substituteTypeVars(cast(iface), type));
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Same as {@link #actual_parameterized_supertype(ParameterizedType)} but also accepts
+     * Same as {@link #actualParameterizedSupertype(ParameterizedType)} but also accepts
      * {@code Class<?>} arguments (in which case there is no parameter substitution to be done).
      */
-    public static Type actual_parameterized_supertype (Type type)
+    public static Type actualParameterizedSupertype (Type type)
     {
         if (type instanceof Class<?>)
             return ((Class<?>) type).getGenericSuperclass();
         if (type instanceof ParameterizedType)
-            return actual_parameterized_supertype((ParameterizedType) type);
+            return actualParameterizedSupertype((ParameterizedType) type);
         else
             throw new IllegalArgumentException("not an class-based type: " + type);
     }
@@ -88,15 +88,15 @@ public final class Reflection
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Same idea as {@link #actual_parameterized_interfaces(ParameterizedType)} but also accepts
+     * Same idea as {@link #actualParameterizedInterfaces(ParameterizedType)} but also accepts
      * {@code Class<?>} arguments (in which case there is no parameter substitution to be done).
      */
-    public static Type[] actual_parameterized_interfaces (Type type)
+    public static Type[] actualParameterizedInterfaces (Type type)
     {
         if (type instanceof Class<?>)
             return ((Class<?>) type).getGenericInterfaces();
         if (type instanceof ParameterizedType)
-            return actual_parameterized_interfaces((ParameterizedType) type);
+            return actualParameterizedInterfaces((ParameterizedType) type);
         else
             throw new IllegalArgumentException("not an class-based type: " + type);
     }
@@ -104,61 +104,61 @@ public final class Reflection
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Returns a {@link GenericType} mimicking {@code super_class}, after performing substitution of
-     * its type arguments based on {@code sub_class}.
+     * Returns a {@link GenericType} mimicking {@code superClass}, after performing substitution of
+     * its type arguments based on {@code subClass}.
      *
-     * <p>{@code super_class} is meant to be a type that appears in an {@code extends} or {@code
-     * implements} clause in the class of {@code sub_class}, and as such may contain references to
+     * <p>{@code superClass} is meant to be a type that appears in an {@code extends} or {@code
+     * implements} clause in the class of {@code subClass}, and as such may contain references to
      * type variables introduce in the sub classclass. This method substitutes these type variables
-     * for their actual value in {@code sub_class}.
+     * for their actual value in {@code subClass}.
      *
-     * <p>The method is offered for completeness, but {@link #actual_parameterized_supertype} and
-     * {@link #actual_parameterized_interfaces} should subsumes most pratical uses.
+     * <p>The method is offered for completeness, but {@link #actualParameterizedSupertype} and
+     * {@link #actualParameterizedInterfaces} should subsumes most pratical uses.
      */
-    public static GenericType substitute_type_vars
-            (ParameterizedType super_class, ParameterizedType sub_class)
+    public static GenericType substituteTypeVars
+            (ParameterizedType superClass, ParameterizedType subClass)
     {
-        TypeVariable<?>[] sub_params = raw(sub_class).getTypeParameters();
-        Type[] sub_args = sub_class.getActualTypeArguments();
-        return substitute_type_vars(super_class, sub_params, sub_args);
+        TypeVariable<?>[] subParams = raw(subClass).getTypeParameters();
+        Type[] subArgs = subClass.getActualTypeArguments();
+        return substituteTypeVars(superClass, subParams, subArgs);
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    private static GenericType substitute_type_vars
-            (ParameterizedType type, TypeVariable<?>[] subst_from, Type[] subst_to)
+    private static GenericType substituteTypeVars
+            (ParameterizedType type, TypeVariable<?>[] substFrom, Type[] substTo)
     {
-        Type[] type_args = type.getActualTypeArguments();
-        Type[] new_type_args = new Type[type_args.length];
+        Type[] typeArgs = type.getActualTypeArguments();
+        Type[] newTypeArgs = new Type[typeArgs.length];
 
-        for (int i = 0; i < type_args.length; ++i)
+        for (int i = 0; i < typeArgs.length; ++i)
         {
-            Type type_arg = type_args[i];
+            Type typeArg = typeArgs[i];
 
-            if (type_arg instanceof Class<?>) {
-                new_type_args[i] = type_arg;
+            if (typeArg instanceof Class<?>) {
+                newTypeArgs[i] = typeArg;
             }
 
-            else if (type_arg instanceof ParameterizedType) {
-                ParameterizedType ptype_arg = cast(type_arg);
-                if (ptype_arg.getActualTypeArguments().length == 0)
-                    new_type_args[i] = ptype_arg;
+            else if (typeArg instanceof ParameterizedType) {
+                ParameterizedType pTypeArg = cast(typeArg);
+                if (pTypeArg.getActualTypeArguments().length == 0)
+                    newTypeArgs[i] = pTypeArg;
                 else
-                    new_type_args[i] = substitute_type_vars(ptype_arg, subst_from, subst_to);
+                    newTypeArgs[i] = substituteTypeVars(pTypeArg, substFrom, substTo);
             }
 
-            else if (type_arg instanceof TypeVariable<?>) {
-                int index = NArrays.index_of(subst_from, type_arg);
+            else if (typeArg instanceof TypeVariable<?>) {
+                int index = NArrays.index_of(substFrom, typeArg);
                 if (index < 0)
-                    throw new RuntimeException("could not find type var to subtitute: " + type_arg);
-                new_type_args[i] = subst_to[index];
+                    throw new RuntimeException("could not find type var to subtitute: " + typeArg);
+                newTypeArgs[i] = substTo[index];
             }
 
             else throw new Error(
-                        "unknown kind of Type: " + type_arg + "(" + type_arg.getClass() + ")");
+                        "unknown kind of Type: " + typeArg + "(" + typeArg.getClass() + ")");
         }
 
-        return new GenericType(null, raw(type), new_type_args);
+        return new GenericType(null, raw(type), newTypeArgs);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ public final class Reflection
      * {@link Exceptions#rethrow}, and wraps any {@link WrongMethodTypeException} resulting from an
      * incorrect invocation in an {@link Error}.
      */
-    public static void try_handles (ThrowingRunnable runnable) {
+    public static void tryHandles (ThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch (WrongMethodTypeException e) {

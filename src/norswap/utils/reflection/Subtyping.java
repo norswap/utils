@@ -144,8 +144,8 @@ public final class Subtyping
         if (!check(rawA, rawB))
             return false;
 
-        Type parent = Reflection.actual_parameterized_supertype(a);
-        Type[] interfaces = Reflection.actual_parameterized_interfaces(a);
+        Type parent = Reflection.actualParameterizedSupertype(a);
+        Type[] interfaces = Reflection.actualParameterizedInterfaces(a);
 
         return parent != null && check(parent, b)
                 || Arrays.stream(interfaces).anyMatch(it -> check(it, b));

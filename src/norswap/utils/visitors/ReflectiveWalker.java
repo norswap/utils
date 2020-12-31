@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static norswap.utils.Util.cast;
-import static norswap.utils.reflection.Reflection.try_handles;
+import static norswap.utils.reflection.Reflection.tryHandles;
 
 /**
  * Abstract class for the implementation of a {@link Walker} that determines the children
@@ -73,7 +73,7 @@ public abstract class ReflectiveWalker<T> extends Walker<T>
 
         ArrayList<T> children = new ArrayList<>(handles.size());
 
-        try_handles(() -> {
+        tryHandles(() -> {
             for (HandleWrapper wrap: handles)
                 if (wrap.collection) {
                     Collection<T> items = cast(wrap.handle.invoke(node));
