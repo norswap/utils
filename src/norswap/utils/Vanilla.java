@@ -39,7 +39,7 @@ public final class Vanilla
     /**
      * @return the last element of {@code list} or {@code null} if the list is empty.
      */
-    public static <T> T last_or_null (List<T> list)
+    public static <T> T lastOrNull (List<T> list)
     {
         return list.isEmpty() ? null : list.get(list.size() - 1);
     }
@@ -50,7 +50,7 @@ public final class Vanilla
      * Removes the last element of the list.
      * @throws NoSuchElementException if the list is empty.
      */
-    public static <T> void remove_last (List<T> list)
+    public static <T> void removeLast (List<T> list)
     {
         if (list.isEmpty()) throw new NoSuchElementException();
         list.remove(list.size() - 1);
@@ -62,7 +62,7 @@ public final class Vanilla
      * Removes the last {@code n} elements of the list.
      * @throws NoSuchElementException if the list has less than {@code n} elements.
      */
-    public static <T> void remove_last (List<T> list, int n)
+    public static <T> void removeLast (List<T> list, int n)
     {
         if (list.size() < n) throw new NoSuchElementException();
         for (int i = 0; i < n; ++i) list.remove(list.size() - 1);
@@ -87,9 +87,9 @@ public final class Vanilla
 
     /**
      * Return a fixed-size list that contains all items in the array from index {@code start} and
-     * onwards. If you need a list that can grow use {@link #arraylist_slice}.
+     * onwards. If you need a list that can grow use {@link #arrayListSlice}.
      */
-    public static <T> List<T> list_slice(T[] items, int start)
+    public static <T> List<T> listSlice (T[] items, int start)
     {
         if (start < 0 || start > items.length)
             throw new IndexOutOfBoundsException(
@@ -101,9 +101,9 @@ public final class Vanilla
 
     /**
      * Return an array list  that contains all items in the array from index {@code start} and
-     * onwards. If you don't need the list to grow, use {@link #list_slice}.
+     * onwards. If you don't need the list to grow, use {@link #listSlice}.
      */
-    public static <T> ArrayList<T> arraylist_slice (T[] items, int start)
+    public static <T> ArrayList<T> arrayListSlice (T[] items, int start)
     {
         if (start < 0 || start > items.length)
             throw new IndexOutOfBoundsException(
@@ -117,12 +117,12 @@ public final class Vanilla
 
     /**
      * Return a fixed-size list that contains all items in the array in the {@code [start, end[}
-     * range. If you need a list that can grow use {@link #arraylist_slice(Object[], int, int)}.
+     * range. If you need a list that can grow use {@link #arrayListSlice(Object[], int, int)}.
      *
      * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
      * as {@code items.length - 1}.
      */
-    public static <T> List<T> list_slice (T[] items, int start, int end)
+    public static <T> List<T> listSlice (T[] items, int start, int end)
     {
         if (end < 0) end = items.length + end;
 
@@ -137,12 +137,12 @@ public final class Vanilla
 
     /**
      * Return an array list  that contains all items in the array in the {@code [start, end[} range.
-     * If you don't need the list to grow, use {@link #list_slice(Object[], int, int)}.
+     * If you don't need the list to grow, use {@link #listSlice(Object[], int, int)}.
      *
      * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
      * as {@code items.length - 1}.
      */
-    public static <T> ArrayList<T> arraylist_slice (T[] items, int start, int end)
+    public static <T> ArrayList<T> arrayListSlice (T[] items, int start, int end)
     {
         if (end < 0) end = items.length + end;
 
@@ -186,7 +186,7 @@ public final class Vanilla
      * Adds all {@code items} to {@code col}.
      */
     @SafeVarargs
-    public static <T> void add_array (Collection<T> col, T... items)
+    public static <T> void addArray (Collection<T> col, T... items)
     {
         col.addAll(java.util.Arrays.asList(items));
     }
@@ -197,7 +197,7 @@ public final class Vanilla
     /**
      * Adds all {@code items} to {@code col}.
      */
-    public static <T> void add_all (Collection<T> col, Iterable<T> items)
+    public static <T> void addAll (Collection<T> col, Iterable<T> items)
     {
         if (items instanceof Collection)
             col.addAll((Collection<T>) items);
@@ -216,7 +216,7 @@ public final class Vanilla
      */
     public static ArrayList<Object> concat (Object... items)
     {
-        return concat_into(new ArrayList<>(), items);
+        return concatInto(new ArrayList<>(), items);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -229,14 +229,14 @@ public final class Vanilla
      * <p>Flattened items include arrays, {@link Iterable} (so collections as well), {@link
      * Enumeration} and {@link Stream}.
      */
-    public static <T extends Collection<Object>> T concat_into (T col, Object... items)
+    public static <T extends Collection<Object>> T concatInto (T col, Object... items)
     {
         for (Object item: items)
         {
             /**/ if (item instanceof Object[])
-                add_array(col, items);
+                addArray(col, items);
             else if (item instanceof Iterable<?>)
-                add_all(col, cast(item));
+                addAll(col, cast(item));
             else if (item instanceof Enumeration<?>)
                 col.addAll(Collections.list((Enumeration<?>) item));
             else if (item instanceof Stream<?>)
@@ -343,7 +343,7 @@ public final class Vanilla
 
     // ---------------------------------------------------------------------------------------------
 
-    private static void check_deque_size (Deque<?> deque, int amount)
+    private static void checkDequeSize (Deque<?> deque, int amount)
     {
         if (amount < 0 || deque.size() < amount)
             throw new IndexOutOfBoundsException(
@@ -358,9 +358,9 @@ public final class Vanilla
      *
      * @throws IndexOutOfBoundsException if the index is invalid
      */
-    public static <T> T peek_index (Deque<T> deque, int depth)
+    public static <T> T peekIndex (Deque<T> deque, int depth)
     {
-        check_deque_size(deque, depth + 1);
+        checkDequeSize(deque, depth + 1);
         int i = 0;
         for (T it: deque) {
             if (i++ == depth)
@@ -378,7 +378,7 @@ public final class Vanilla
      */
     public static <T> T[] peek (Deque<T> deque, int amount)
     {
-        check_deque_size(deque, amount);
+        checkDequeSize(deque, amount);
         @SuppressWarnings("unchecked")
         T[] args = (T[]) new Object[amount];
         int i = 1;
@@ -395,7 +395,7 @@ public final class Vanilla
      * deque}, where {@code index} is the distance from the end/bottom of the deque (specifying an
      * {@code index} of 0 returns all values in the deque).
      */
-    public static <T> T[] peek_from (Deque<T> deque, int index)
+    public static <T> T[] peekFrom (Deque<T> deque, int index)
     {
         return peek(deque, deque.size() - index);
     }
@@ -411,7 +411,7 @@ public final class Vanilla
      */
     public static <T> T[] pop (Deque<T> deque, int amount)
     {
-        check_deque_size(deque, amount);
+        checkDequeSize(deque, amount);
         @SuppressWarnings("unchecked")
         T[] args = (T[]) new Object[amount];
         for (int i = 1; i <= amount; ++i)
@@ -428,7 +428,7 @@ public final class Vanilla
      *
      * <p>All values returned are popped from the stack.
      */
-    public static <T> T[] pop_from (Deque<T> deque, int index)
+    public static <T> T[] popFrom (Deque<T> deque, int index)
     {
         return pop(deque, deque.size() - index);
     }
@@ -443,10 +443,9 @@ public final class Vanilla
      *
      * <p>Compared to {@link #concat(Object...)}, the returned list has the proper type parameter.
      */
-    public static <T> List<T> as_list(Stream<T> stream) {
+    public static <T> List<T> asList (Stream<T> stream) {
         return stream.collect(Collectors.toList());
     }
 
     // ---------------------------------------------------------------------------------------------
 }
-
