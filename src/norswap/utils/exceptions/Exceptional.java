@@ -113,7 +113,7 @@ public final class Exceptional<T>
     /**
      * Indicates whether the object holds a value.
      */
-    public boolean is_value() {
+    public boolean isValue() {
         return exception == null;
     }
 
@@ -122,7 +122,7 @@ public final class Exceptional<T>
     /**
      * Indicates whether the object holds an exception.
      */
-    public boolean is_exception() {
+    public boolean isException() {
         return exception != null;
     }
 

@@ -15,7 +15,7 @@ public final class Exceptions
      * Returns a string representation of the stack trace of the given throwable, as per {@link
      * Throwable#printStackTrace()}.
      */
-    public static String string_stack_trace (Throwable t)
+    public static String stringStackTrace (Throwable t)
     {
         StringWriter trace = new StringWriter();
         PrintWriter w = new PrintWriter(trace);
@@ -30,7 +30,7 @@ public final class Exceptions
      * Trims the given stack trace, removing {@code peel} stack trace elements at the top of the
      * stack trace (the most recently called methods).
      */
-    public static StackTraceElement[] trim_stack_trace (int peel, StackTraceElement[] trace) {
+    public static StackTraceElement[] trimStackTrace (int peel, StackTraceElement[] trace) {
         return Arrays.copyOfRange(trace, peel, trace.length);
     }
 
@@ -41,8 +41,8 @@ public final class Exceptions
      * the top of the stack trace (the most recently called methods). Mutates the throwable and
      * returns it.
      */
-    public static <T extends Throwable> T trim_stack_trace (int peel, T throwable) {
-        throwable.setStackTrace(trim_stack_trace(peel, throwable.getStackTrace()));
+    public static <T extends Throwable> T trimStackTrace (int peel, T throwable) {
+        throwable.setStackTrace(trimStackTrace(peel, throwable.getStackTrace()));
         return throwable;
     }
 
