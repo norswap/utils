@@ -34,7 +34,7 @@ public final class Slot<T>
 
     // ---------------------------------------------------------------------------------------------
 
-    @Override public int hashCode () {
+    @Override public int hashCode() {
         return x != null ? x.hashCode() : 0;
     }
 

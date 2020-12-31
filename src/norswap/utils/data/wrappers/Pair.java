@@ -16,7 +16,7 @@ public final class Pair<A, B> implements Cloneable
         this.b = b;
     }
 
-    @Override public int hashCode ()
+    @Override public int hashCode()
     {
         return 31 * Objects.hashCode(a) + Objects.hashCode(b);
     }
@@ -28,12 +28,13 @@ public final class Pair<A, B> implements Cloneable
         return Objects.equals(a, o.a) && Objects.equals(b, o.b);
     }
 
-    @Override public Object clone ()
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override public Object clone()
     {
         return new Pair<>(a, b);
     }
 
-    @Override public String toString ()
+    @Override public String toString()
     {
         return "(" + a + ", " + b + ")";
     }

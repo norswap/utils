@@ -16,7 +16,7 @@ public final class Indexed<T> implements Cloneable
         this.value = value;
     }
 
-    @Override public int hashCode ()
+    @Override public int hashCode()
     {
         return 31 * index + Objects.hashCode(value);
     }
@@ -28,7 +28,8 @@ public final class Indexed<T> implements Cloneable
         return index == o.index && Objects.equals(value, o.value);
     }
 
-    @Override public Object clone ()
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override public Object clone()
     {
         return new Indexed<>(index, value);
     }

@@ -10,7 +10,7 @@ public final class Chance
 {
     // ---------------------------------------------------------------------------------------------
 
-    private static Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     // ---------------------------------------------------------------------------------------------
 
