@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     // ...
-    implementation("com.norswap:utils:1.0.4")
+    implementation("com.norswap:utils:2.0.0")
 }
 ```
 
@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
     // ...
-    implementation 'com.norswap:utils:1.0.4'
+    implementation 'com.norswap:utils:2.0.0'
 }
 ```
 
@@ -59,7 +59,7 @@ In `pom.xml`:
     <dependency>
       <groupId>com.norswap</groupId>
       <artifactId>utils</artifactId>
-      <version>1.0.4</version>
+      <version>2.0.0</version>
     </dependency>  
   </dependencies>
 </project>
