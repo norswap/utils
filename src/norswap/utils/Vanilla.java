@@ -1,5 +1,11 @@
 package norswap.utils;
 
+import norswap.utils.data.functions.IndexedBiConsumer;
+import norswap.utils.data.functions.IndexedBiFunction;
+import norswap.utils.data.functions.IndexedConsumer;
+import norswap.utils.data.functions.IndexedFunction;
+import norswap.utils.data.wrappers.Indexed;
+import norswap.utils.data.wrappers.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,8 +13,11 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,7 +82,7 @@ public final class Vanilla
     /**
      * Returns a new {@link ArrayList} containing the items from {@code items}.
      *
-     * <p>If the list doesn't need to grow, use {@link java.util.Arrays#asList} instead.
+     * <p>If the list doesn't need to grow, use {@link Arrays#asList} instead.
      */
     @SafeVarargs
     public static <T> ArrayList<T> list (T... items)
@@ -188,7 +197,7 @@ public final class Vanilla
     @SafeVarargs
     public static <T> void addArray (Collection<T> col, T... items)
     {
-        col.addAll(java.util.Arrays.asList(items));
+        col.addAll(Arrays.asList(items));
     }
 
 
@@ -283,31 +292,16 @@ public final class Vanilla
      * in the supplied collection.
      *
      * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
-     * is necessary to be able to generate a return value with the proper type, but this array not
-     * be mutated in any way.
+     * is necessary to be able to generate a return value with the proper type, but this array will
+     * not be mutated in any way.
      */
     public static <T, R> R[] map (Collection<T> collection, R[] witness, Function<T, R> f)
     {
-        R[] out = java.util.Arrays.copyOf(witness, collection.size());
+        R[] out = Arrays.copyOf(witness, collection.size());
         int i = 0;
         for (T item: collection)
             out[i++] = f.apply(item);
         return out;
-    }
-
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a new array containing the result of applying {@code f} to all items
-     * in the supplied iterable.
-     *
-     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
-     * is necessary to be able to generate a return value with the proper type, but this array not
-     * be mutated in any way.
-     */
-    public static <T, R> R[] map (Iterable<T> iterable, R[] witness, Function<T, R> f)
-    {
-        return map(iterable, f).toArray(witness);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -318,7 +312,7 @@ public final class Vanilla
      */
     public static <T, R> ArrayList<R> map (T[] array, Function<T, R> f)
     {
-        ArrayList<R> out = new ArrayList<>();
+        ArrayList<R> out = new ArrayList<>(array.length);
         for (T it: array)
             out.add(f.apply(it));
         return out;
@@ -330,24 +324,104 @@ public final class Vanilla
      * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
      *
      * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
-     * is necessary to be able to generate a return value with the proper type, but this array not
-     * be mutated in any way.
-     *
-     * <p>This function delegates to {@link NArrays#map}, it is redefined here because it would be
-     * hidden by the other map functions otherwise.
+     * is necessary to be able to generate a return value with the proper type, but this array will
+     * not be mutated in any way.
      */
     public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
     {
-        return NArrays.map(array, witness, f);
+        R[] out = Arrays.copyOf(witness, array.length);
+        for (int i = 0; i < array.length; ++i)
+            out[i] = f.apply(array[i]);
+        return out;
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    private static void checkDequeSize (Deque<?> deque, int amount)
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied collection.
+     */
+    public static <T, R> ArrayList<R> mapIndexed (Collection<T> collection, IndexedFunction<T, R> f)
     {
+        ArrayList<R> out = new ArrayList<>(collection.size());
+        int i = 0;
+        for (T it: collection)
+            out.add(f.apply(i++, it));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied iterable.
+     */
+    public static <T, R> ArrayList<R> mapIndexed (Iterable<T> iterable, IndexedFunction<T, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>();
+        int i = 0;
+        for (T it: iterable)
+            out.add(f.apply(i++, it));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array containing the result of applying {@code f} to all items
+     * in the supplied collection.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array will
+     * not be mutated in any way.
+     */
+    public static <T, R> R[] mapIndexed
+            (Collection<T> collection, R[] witness, IndexedFunction<T, R> f)
+    {
+        R[] out = Arrays.copyOf(witness, collection.size());
+        int i = 0;
+        for (T item: collection)
+            out[i] = f.apply(i++, item); // left-hand index evaluated before right-hand side
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new array list containing the result of applying {@code f} to all items
+     * in the supplied array.
+     */
+    public static <T, R> ArrayList<R> mapIndexed (T[] array, IndexedFunction<T, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>(array.length);
+        for (int i = 0; i < array.length; i++)
+            out.add(f.apply(i, array[i++]));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
+     *
+     * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
+     * is necessary to be able to generate a return value with the proper type, but this array will
+     * not be mutated in any way.
+     */
+    public static <T, R> R[] mapIndexed (T[] array, R[] witness, IndexedFunction<T, R> f)
+    {
+        R[] out = Arrays.copyOf(witness, array.length);
+        for (int i = 0; i < array.length; ++i)
+            out[i] = f.apply(i, array[i++]); // left-hand index evaluated before right-hand side
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    private static void checkDequeSize (Deque<?> deque, int amount) {
         if (amount < 0 || deque.size() < amount)
             throw new IndexOutOfBoundsException(
-                "amount (" + amount + ") too large for eque of size (" + deque.size() + ")");
+                    "amount (" + amount + ") too large for eque of size (" + deque.size() + ")");
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -358,11 +432,10 @@ public final class Vanilla
      *
      * @throws IndexOutOfBoundsException if the index is invalid
      */
-    public static <T> T peekIndex (Deque<T> deque, int depth)
-    {
+    public static <T> T peekIndex (Deque<T> deque, int depth) {
         checkDequeSize(deque, depth + 1);
         int i = 0;
-        for (T it: deque) {
+        for (T it : deque) {
             if (i++ == depth)
                 return it;
         }
@@ -376,13 +449,12 @@ public final class Vanilla
      * in reverse order of distance to the front (the front of the deque will be the last element of
      * the array).
      */
-    public static <T> T[] peek (Deque<T> deque, int amount)
-    {
+    public static <T> T[] peek (Deque<T> deque, int amount) {
         checkDequeSize(deque, amount);
         @SuppressWarnings("unchecked")
         T[] args = (T[]) new Object[amount];
         int i = 1;
-        for (T it: deque)
+        for (T it : deque)
             if (i <= amount) args[amount - i++] = it;
             else break;
         return args;
@@ -395,8 +467,7 @@ public final class Vanilla
      * deque}, where {@code index} is the distance from the end/bottom of the deque (specifying an
      * {@code index} of 0 returns all values in the deque).
      */
-    public static <T> T[] peekFrom (Deque<T> deque, int index)
-    {
+    public static <T> T[] peekFrom (Deque<T> deque, int index) {
         return peek(deque, deque.size() - index);
     }
 
@@ -409,8 +480,7 @@ public final class Vanilla
      *
      * <p>All values returned are popped from the stack.
      */
-    public static <T> T[] pop (Deque<T> deque, int amount)
-    {
+    public static <T> T[] pop (Deque<T> deque, int amount) {
         checkDequeSize(deque, amount);
         @SuppressWarnings("unchecked")
         T[] args = (T[]) new Object[amount];
@@ -428,8 +498,7 @@ public final class Vanilla
      *
      * <p>All values returned are popped from the stack.
      */
-    public static <T> T[] popFrom (Deque<T> deque, int index)
-    {
+    public static <T> T[] popFrom (Deque<T> deque, int index) {
         return pop(deque, deque.size() - index);
     }
 
@@ -445,6 +514,335 @@ public final class Vanilla
      */
     public static <T> List<T> asList (Stream<T> stream) {
         return stream.collect(Collectors.toList());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for each item in the array along with its index.
+     */
+    public static <T> void forEachIndexed (T[] array, IndexedConsumer<T> f) {
+        for (int i = 0; i < array.length; ++i)
+            f.accept(i, array[i]);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for each item in {@code iterable} along with its index.
+     */
+    public static <T> void forEachIndexed (Iterable<T> iterable, IndexedConsumer<T> f) {
+        int i = 0;
+        for (T item : iterable)
+            f.accept(i++, item);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index.
+     * {@code f} will thus be called as many times as the length of the shortest sequence.
+     */
+    public static <T, U> void coIterate
+            (Iterable<T> iterable1, Iterable<U> iterable2, BiConsumer<T, U> f)
+    {
+        Iterator<T> iter1 = iterable1.iterator();
+        Iterator<U> iter2 = iterable2.iterator();
+        while (iter1.hasNext() && iter2.hasNext())
+            f.accept(iter1.next(), iter2.next());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index.
+     * {@code f} will thus be called as many times as the length of the shortest sequence.
+     */
+    public static <T, U> void coIterate
+            (T[] array, Iterable<U> iterable, BiConsumer<T, U> f)
+    {
+        int i = 0;
+        Iterator<U> iter2 = iterable.iterator();
+        while (i < array.length && iter2.hasNext())
+            f.accept(array[i++], iter2.next());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index.
+     * {@code f} will thus be called as many times as the length of the shortest sequence.
+     */
+    public static <T, U> void coIterateIndexed
+            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiConsumer<T, U> f)
+    {
+        int i = 0;
+        Iterator<T> iter1 = iterable1.iterator();
+        Iterator<U> iter2 = iterable2.iterator();
+        while (iter1.hasNext() && iter2.hasNext())
+            f.accept(i++, iter1.next(), iter2.next());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index.
+     * {@code f} will thus be called as many times as the length of the shortest sequence.
+     */
+    public static <T, U> void coIterateIndexed
+            (T[] array, Iterable<U> iterable, IndexedBiConsumer<T, U> f)
+    {
+        int i = 0;
+        Iterator<U> iter2 = iterable.iterator();
+        while (i < array.length && iter2.hasNext())
+            f.accept(i, array[i++], iter2.next());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> map
+            (Iterable<T> iterable1, Iterable<U> iterable2, BiFunction<T, U, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>();
+        Iterator<T> iter1 = iterable1.iterator();
+        Iterator<U> iter2 = iterable2.iterator();
+        while (iter1.hasNext() && iter2.hasNext())
+            out.add(f.apply(iter1.next(), iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> map
+         (T[] array, Iterable<U> iterable, BiFunction<T, U, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>();
+        int i = 0;
+        Iterator<U> iter = iterable.iterator();
+        while (i < array.length && iter.hasNext())
+            out.add(f.apply(array[i++], iter.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from {@code coll1} and {@code coll2} that have
+     * the same index and collects the result in a list, whose size will thus be length of the
+     * shortest collection.
+     */
+    public static <T, U, R> ArrayList<R> map
+            (Collection<T> coll1, Collection<U> coll2, BiFunction<T, U, R> f)
+    {
+        int size = Math.min(coll1.size(), coll2.size());
+        ArrayList<R> out = new ArrayList<>(size);
+        Iterator<T> iter1 = coll1.iterator();
+        Iterator<U> iter2 = coll2.iterator();
+        int i = 0;
+        while (i++ < size)
+            out.add(f.apply(iter1.next(), iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> map
+            (T[] array, Collection<U> coll, BiFunction<T, U, R> f)
+    {
+        int size = Math.min(array.length, coll.size());
+        ArrayList<R> out = new ArrayList<>(size);
+        int i = 0;
+        Iterator<U> iter = coll.iterator();
+        while (i < size)
+            out.add(f.apply(array[i++], iter.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> mapIndexed
+            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiFunction<T, U, R> f)
+    {
+        int i = 0;
+        ArrayList<R> out = new ArrayList<>();
+        Iterator<T> iter1 = iterable1.iterator();
+        Iterator<U> iter2 = iterable2.iterator();
+        while (iter1.hasNext() && iter2.hasNext())
+            out.add(f.apply(i++, iter1.next(), iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> mapIndexed
+            (T[] array, Iterable<U> iterable, IndexedBiFunction<T, U, R> f)
+    {
+        ArrayList<R> out = new ArrayList<>();
+        int i = 0;
+        Iterator<U> iter2 = iterable.iterator();
+        while (i < array.length && iter2.hasNext())
+            out.add(f.apply(i, array[i++], iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> mapIndexed
+            (Collection<T> coll1, Collection<U> coll2, IndexedBiFunction<T, U, R> f)
+    {
+        int size = Math.min(coll1.size(), coll2.size());
+        ArrayList<R> out = new ArrayList<>(size);
+        int i = 0;
+        Iterator<T> iter1 = coll1.iterator();
+        Iterator<U> iter2 = coll2.iterator();
+        while (i < size)
+            out.add(f.apply(i++, iter1.next(), iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs {@code f} for every pair of items from the given sequences that have the same index and
+     * collects the result in a list, whose size will thus be length of the shortest sequence.
+     */
+    public static <T, U, R> ArrayList<R> mapIndexed
+         (T[] array, Collection<U> coll, IndexedBiFunction<T, U, R> f)
+    {
+        int size = Math.min(array.length, coll.size());
+        ArrayList<R> out = new ArrayList<>(size);
+        int i = 0;
+        Iterator<U> iter2 = coll.iterator();
+        while (i < array.length && iter2.hasNext())
+            out.add(f.apply(i, array[i++], iter2.next()));
+        return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a list of (index, item) pairs from the supplied collection.
+     */
+    public static <T> ArrayList<Indexed<T>> indexed (Collection<T> coll) {
+        return mapIndexed(coll, Indexed::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a list of (index, item) pairs from the supplied iterable.
+     */
+    public static <T> ArrayList<Indexed<T>> indexed (Iterable<T> iterable) {
+        return mapIndexed(iterable, Indexed::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a list of (index, item) pairs from the supplied array.
+     */
+    public static <T> ArrayList<Indexed<T>> indexed (T[] array) {
+        return mapIndexed(array, Indexed::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of (index, item) pairs from the supplied array..
+     */
+    public static <T> Indexed<T>[] indexedArray (T[] array) {
+        return cast(mapIndexed(array, new Indexed[0], Indexed::new));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of (index, item) pairs from the supplied collection.
+     */
+    public static <T> Indexed<T>[] indexedArray (Collection<T> coll) {
+        return cast(mapIndexed(coll, new Indexed[0], Indexed::new));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied sequences.
+     * The returned list is thus as big as the smallest of the two supplied sequences.
+     */
+    public static <T, U> ArrayList<Pair<T, U>> zip (Iterable<T> iterable1, Iterable<U> iterable2) {
+        return map(iterable1, iterable2, Pair::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied sequences.
+     * The returned list is thus as big as the smallest of the two supplied sequences.
+     */
+    public static <T, U> ArrayList<Pair<T, U>> zip (T[] array, Iterable<U> iterable) {
+        return map(array, iterable, Pair::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied sequences.
+     * The returned list is thus as big as the smallest of the two supplied sequences.
+     */
+    public static <T, U> ArrayList<Pair<T, U>> zip (Collection<T> coll1, Collection<U> coll2) {
+        return map(coll1, coll2, Pair::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied sequences.
+     * The returned list is thus as big as the smallest of the two supplied sequences.
+     */
+    public static <T, U> ArrayList<Pair<T, U>> zip (T[] array, Collection<U> coll) {
+        return map(array, coll, Pair::new);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied arrays.
+     * The returned array is thus as big as the smallest of the two supplied arrays.
+     *
+     * <p>This function delegates to {@link NArrays#zip}, it is redefined here because it would be
+     * hidden by the other {@code zip} functions otherwise.}
+     */
+    public static <T, U> Pair<T, U>[] zip (T[] array1, U[] array2)
+    {
+        int size = Math.min(array1.length, array2.length);
+        Pair<T, U>[] out = cast(new Pair[size]);
+        for (int i = 0; i < size; ++i)
+            out[i] = new Pair<>(array1[i], array2[i]);
+        return out;
     }
 
     // ---------------------------------------------------------------------------------------------

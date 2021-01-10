@@ -1,11 +1,18 @@
 package norswap.utils;
 
+import norswap.utils.data.wrappers.Pair;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static norswap.utils.Util.cast;
+
 /**
  * Utilities to deal with arrays.
+ *
+ * <p>Other function of interest on arrays can also be found in {@link Vanilla}, most notably {@link
+ * Vanilla#map(Object[], Function)} (and variants) and {@link Vanilla#zip(Object[], Object[])} (and
+ * variants).
  */
 public final class NArrays
 {
@@ -20,7 +27,7 @@ public final class NArrays
      */
     public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
     {
-        R[] out = java.util.Arrays.copyOf(witness, array.length);
+        R[] out = Arrays.copyOf(witness, array.length);
         for (int i = 0; i < array.length; ++i)
             out[i] = f.apply(array[i]);
         return out;
@@ -36,7 +43,7 @@ public final class NArrays
     {
         int size = 1;
         while (size < minSize) size <<= 1;
-        return java.util.Arrays.copyOf(array, size);
+        return Arrays.copyOf(array, size);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -49,7 +56,7 @@ public final class NArrays
     {
         int size = 1;
         while (size < minSize) size <<= 1;
-        return java.util.Arrays.copyOf(array, size);
+        return Arrays.copyOf(array, size);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -62,7 +69,7 @@ public final class NArrays
     {
         int size = 1;
         while (size < minSize) size <<= 1;
-        return java.util.Arrays.copyOf(array, size);
+        return Arrays.copyOf(array, size);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -153,6 +160,21 @@ public final class NArrays
         T[] copy = Arrays.copyOf(array, array.length + items.length);
         System.arraycopy(items, 0, copy, array.length, items.length);
         return copy;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an array of pairs of items with corresponding indexes in the two supplied arrays.
+     * The returned array is thus as big as the smallest of the two supplied ararys.
+     */
+    public static <T, U> Pair<T, U>[] zip (T[] array1, U[] array2) {
+
+        int size = Math.min(array1.length, array2.length);
+        Pair<T, U>[] out = cast(new Pair[size]);
+        for (int i = 0; i < size; ++i)
+            out[i] = new Pair<>(array1[i], array2[i]);
+        return out;
     }
 
     // ---------------------------------------------------------------------------------------------

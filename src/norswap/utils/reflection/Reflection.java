@@ -1,5 +1,6 @@
 package norswap.utils.reflection;
 
+import norswap.utils.Vanilla;
 import norswap.utils.exceptions.Exceptions;
 import norswap.utils.NArrays;
 import norswap.utils.exceptions.ThrowingRunnable;
@@ -63,7 +64,7 @@ public final class Reflection
     public static ParameterizedType[] actualParameterizedInterfaces (ParameterizedType type)
     {
         Type[] parameterizedInterface = raw(type).getGenericInterfaces();
-        return NArrays.map(parameterizedInterface, new GenericType[0], iface ->
+        return Vanilla.map(parameterizedInterface, new GenericType[0], iface ->
             iface instanceof Class<?>
                 ? new GenericType(null, cast(iface))
                 : substituteTypeVars(cast(iface), type));

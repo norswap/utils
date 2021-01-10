@@ -16,7 +16,8 @@ A collection of Java (8+) utilities.
 - `Strings`: Utility functions dealing with strings and string builders.
 - `Vanilla`: Utility functions for Vanilla Java collections.
 - `Util`: Miscellaneous utility functions.
-- `NArrays`: Utility functions dealing with arrays. 
+- `NArrays`: Utility functions dealing with arrays.
+   (Other array functions of interest are defined in `Vanilla`.)
 
 ## Data Structures
 (`data.structures` package)
@@ -33,6 +34,11 @@ A collection of Java (8+) utilities.
 - `Indexed`: A pair made out of an integer and a value.
 - `Pair`: A simple type for a pair of values.
 - `Slot`: A simple wrapper for a single value, useful when dealing with lambda capture and mutation.
+
+## Functional Interfaces
+(`data.functions` package)
+- `Indexed<XXX>`: A variant of `java.util.funciton.<XXX>` functional interface that accepts an `int`
+  index as first argument.
 
 ## Exceptions
 (`exception` package)
