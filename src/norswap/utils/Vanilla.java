@@ -198,10 +198,10 @@ public final class Vanilla
     /**
      * Adds all {@code items} to {@code col}.
      */
-    public static <T> void addAll (Collection<T> col, Iterable<T> items)
+    public static <T> void addAll (Collection<T> col, Iterable<? extends T> items)
     {
         if (items instanceof Collection)
-            col.addAll((Collection<T>) items);
+            col.addAll(cast(items));
         else
             items.forEach(col::add);
     }
@@ -371,7 +371,7 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied collection.
      */
-    public static <T, R> ArrayList<R> map (Collection<T> collection, Function<T, R> f)
+    public static <T, R> ArrayList<R> map (Collection<T> collection, Function<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>(collection.size());
         for (T it: collection)
@@ -385,7 +385,7 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied iterable.
      */
-    public static <T, R> ArrayList<R> map (Iterable<T> iterable, Function<T, R> f)
+    public static <T, R> ArrayList<R> map (Iterable<T> iterable, Function<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         for (T it: iterable)
@@ -403,7 +403,8 @@ public final class Vanilla
      * is necessary to be able to generate a return value with the proper type, but this array will
      * not be mutated in any way.
      */
-    public static <T, R> R[] map (Collection<T> collection, R[] witness, Function<T, R> f)
+    public static <T, R> R[] map
+            (Collection<T> collection, R[] witness, Function<? super T, ? extends R> f)
     {
         R[] out = Arrays.copyOf(witness, collection.size());
         int i = 0;
@@ -418,7 +419,7 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied array.
      */
-    public static <T, R> ArrayList<R> map (T[] array, Function<T, R> f)
+    public static <T, R> ArrayList<R> map (T[] array, Function<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>(array.length);
         for (T it: array)
@@ -435,7 +436,7 @@ public final class Vanilla
      * is necessary to be able to generate a return value with the proper type, but this array will
      * not be mutated in any way.
      */
-    public static <T, R> R[] map (T[] array, R[] witness, Function<T, R> f)
+    public static <T, R> R[] map (T[] array, R[] witness, Function<? super T, ? extends R> f)
     {
         R[] out = Arrays.copyOf(witness, array.length);
         for (int i = 0; i < array.length; ++i)
@@ -451,7 +452,7 @@ public final class Vanilla
     /**
      * Runs {@code f} for each item in the array along with its index.
      */
-    public static <T> void forEachIndexed (T[] array, IndexedConsumer<T> f) {
+    public static <T> void forEachIndexed (T[] array, IndexedConsumer<? super T> f) {
         for (int i = 0; i < array.length; ++i)
             f.accept(i, array[i]);
     }
@@ -461,7 +462,7 @@ public final class Vanilla
     /**
      * Runs {@code f} for each item in {@code iterable} along with its index.
      */
-    public static <T> void forEachIndexed (Iterable<T> iterable, IndexedConsumer<T> f) {
+    public static <T> void forEachIndexed (Iterable<T> iterable, IndexedConsumer<? super T> f) {
         int i = 0;
         for (T item : iterable)
             f.accept(i++, item);
@@ -473,7 +474,8 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied collection.
      */
-    public static <T, R> ArrayList<R> mapIndexed (Collection<T> collection, IndexedFunction<T, R> f)
+    public static <T, R> ArrayList<R> mapIndexed
+            (Collection<T> collection, IndexedFunction<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>(collection.size());
         int i = 0;
@@ -488,7 +490,8 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied iterable.
      */
-    public static <T, R> ArrayList<R> mapIndexed (Iterable<T> iterable, IndexedFunction<T, R> f)
+    public static <T, R> ArrayList<R> mapIndexed
+            (Iterable<T> iterable, IndexedFunction<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         int i = 0;
@@ -508,7 +511,7 @@ public final class Vanilla
      * not be mutated in any way.
      */
     public static <T, R> R[] mapIndexed
-            (Collection<T> collection, R[] witness, IndexedFunction<T, R> f)
+            (Collection<T> collection, R[] witness, IndexedFunction<? super T, ? extends R> f)
     {
         R[] out = Arrays.copyOf(witness, collection.size());
         int i = 0;
@@ -523,7 +526,7 @@ public final class Vanilla
      * Returns a new array list containing the result of applying {@code f} to all items
      * in the supplied array.
      */
-    public static <T, R> ArrayList<R> mapIndexed (T[] array, IndexedFunction<T, R> f)
+    public static <T, R> ArrayList<R> mapIndexed (T[] array, IndexedFunction<? super T, R> f)
     {
         ArrayList<R> out = new ArrayList<>(array.length);
         for (int i = 0; i < array.length; i++)
@@ -540,7 +543,8 @@ public final class Vanilla
      * is necessary to be able to generate a return value with the proper type, but this array will
      * not be mutated in any way.
      */
-    public static <T, R> R[] mapIndexed (T[] array, R[] witness, IndexedFunction<T, R> f)
+    public static <T, R> R[] mapIndexed
+            (T[] array, R[] witness, IndexedFunction<? super T, ? extends R> f)
     {
         R[] out = Arrays.copyOf(witness, array.length);
         for (int i = 0; i < array.length; ++i)
@@ -603,7 +607,7 @@ public final class Vanilla
      * {@code f} will thus be called as many times as the length of the shortest sequence.
      */
     public static <T, U> void coIterate
-            (Iterable<T> iterable1, Iterable<U> iterable2, BiConsumer<T, U> f)
+            (Iterable<T> iterable1, Iterable<U> iterable2, BiConsumer<? super T, ? super U> f)
     {
         Iterator<T> iter1 = iterable1.iterator();
         Iterator<U> iter2 = iterable2.iterator();
@@ -618,7 +622,7 @@ public final class Vanilla
      * {@code f} will thus be called as many times as the length of the shortest sequence.
      */
     public static <T, U> void coIterate
-            (T[] array, Iterable<U> iterable, BiConsumer<T, U> f)
+            (T[] array, Iterable<U> iterable, BiConsumer<? super T, ? super U> f)
     {
         int i = 0;
         Iterator<U> iter2 = iterable.iterator();
@@ -633,7 +637,7 @@ public final class Vanilla
      * {@code f} will thus be called as many times as the length of the shortest sequence.
      */
     public static <T, U> void coIterateIndexed
-            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiConsumer<T, U> f)
+            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiConsumer<? super T, ? super U> f)
     {
         int i = 0;
         Iterator<T> iter1 = iterable1.iterator();
@@ -649,7 +653,7 @@ public final class Vanilla
      * {@code f} will thus be called as many times as the length of the shortest sequence.
      */
     public static <T, U> void coIterateIndexed
-            (T[] array, Iterable<U> iterable, IndexedBiConsumer<T, U> f)
+            (T[] array, Iterable<U> iterable, IndexedBiConsumer<? super T, ? super U> f)
     {
         int i = 0;
         Iterator<U> iter2 = iterable.iterator();
@@ -667,7 +671,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> map
-            (Iterable<T> iterable1, Iterable<U> iterable2, BiFunction<T, U, R> f)
+            (Iterable<T> iterable1, Iterable<U> iterable2, BiFunction<? super T, ? super U, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         Iterator<T> iter1 = iterable1.iterator();
@@ -684,7 +688,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> map
-         (T[] array, Iterable<U> iterable, BiFunction<T, U, R> f)
+         (T[] array, Iterable<U> iterable, BiFunction<? super T, ? super U, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         int i = 0;
@@ -702,7 +706,7 @@ public final class Vanilla
      * shortest collection.
      */
     public static <T, U, R> ArrayList<R> map
-            (Collection<T> coll1, Collection<U> coll2, BiFunction<T, U, R> f)
+            (Collection<T> coll1, Collection<U> coll2, BiFunction<? super T, ? super U, R> f)
     {
         int size = Math.min(coll1.size(), coll2.size());
         ArrayList<R> out = new ArrayList<>(size);
@@ -721,7 +725,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> map
-            (T[] array, Collection<U> coll, BiFunction<T, U, R> f)
+            (T[] array, Collection<U> coll, BiFunction<? super T, ? super U, R> f)
     {
         int size = Math.min(array.length, coll.size());
         ArrayList<R> out = new ArrayList<>(size);
@@ -739,7 +743,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> mapIndexed
-            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiFunction<T, U, R> f)
+            (Iterable<T> iterable1, Iterable<U> iterable2, IndexedBiFunction<? super T, ? super U, R> f)
     {
         int i = 0;
         ArrayList<R> out = new ArrayList<>();
@@ -757,7 +761,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> mapIndexed
-            (T[] array, Iterable<U> iterable, IndexedBiFunction<T, U, R> f)
+            (T[] array, Iterable<U> iterable, IndexedBiFunction<? super T, ? super U, R> f)
     {
         ArrayList<R> out = new ArrayList<>();
         int i = 0;
@@ -774,7 +778,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> mapIndexed
-            (Collection<T> coll1, Collection<U> coll2, IndexedBiFunction<T, U, R> f)
+            (Collection<T> coll1, Collection<U> coll2, IndexedBiFunction<? super T, ? super U, R> f)
     {
         int size = Math.min(coll1.size(), coll2.size());
         ArrayList<R> out = new ArrayList<>(size);
@@ -793,7 +797,7 @@ public final class Vanilla
      * collects the result in a list, whose size will thus be length of the shortest sequence.
      */
     public static <T, U, R> ArrayList<R> mapIndexed
-         (T[] array, Collection<U> coll, IndexedBiFunction<T, U, R> f)
+         (T[] array, Collection<U> coll, IndexedBiFunction<? super T, ? super U, R> f)
     {
         int size = Math.min(array.length, coll.size());
         ArrayList<R> out = new ArrayList<>(size);
