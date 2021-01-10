@@ -55,6 +55,7 @@ A collection of Java (8+) utilities.
 (`visitors` package)
 
 - `Visitor`: a simple map-based visitor.
+- `ValuedVisitor`: a variant of `Visitor` that support returning a value from the visitor method.  
 - `Walker`: a `Visitor` subclass that can 
 
 ## Scaffolding

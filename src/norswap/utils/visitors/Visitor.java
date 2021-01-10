@@ -20,11 +20,7 @@ import static norswap.utils.Util.cast;
  * be called. The fallback specialization is registered by calling {@link
  * #registerFallback(Consumer)}. If not supplied, an {@link IllegalArgumentException} is thrown.
  *
- * <p>NOTE: I choose not to use a function type instead of a consumer. Setting a return type is
- * awkward when dealing with function that do not return anything (leading to the use of {@link
- * Void} and a whole lot of {@code return null;}). There is also no parameter polymorphism on
- * function types, so the best we can do is accept a single "context" parameter, or an argument
- * array.
+ * <p>If you need to return a value from the visitor, use {@link ValuedVisitor} instead.
  *
  * <p>In practice it's easy to let the specializations access a context object and to wrap the
  * visitor in a function that sets arguments and retrieves the result from that object. Typically
@@ -49,13 +45,13 @@ public final class Visitor<T> implements Consumer<T>
      */
     @Override public void accept (T value)
     {
-        Consumer<?> action = dispatch.get(value.getClass());
+        Consumer<? super T> action = dispatch.get(value.getClass());
         if (action == null) {
             if (fallbackSpecialization == null)
                 throw new IllegalArgumentException("no fallback specified for " + this);
             fallbackSpecialization.accept(value);
         }
-        else action.accept(cast(value));
+        else action.accept(value);
     }
 
     // ---------------------------------------------------------------------------------------------

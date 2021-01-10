@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import static norswap.utils.Util.cast;
+
 /**
  * Utility methods related to exceptions.
  */
@@ -91,6 +93,18 @@ public final class Exceptions
             throw (Error) t;
         else
             throw new RuntimeException(t);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Equivalent to a throw statement (actually to {@link #rethrow(Throwable)} - in that
+     * checked exceptions are wrapped), but can be called in an expression position. Reports
+     * a bogus inferred return type (bogus because this always throws and never returns).
+     */
+    public static <T> T exprThrow (Throwable t) {
+        rethrow(t);
+        return cast(null);
     }
 
     // ---------------------------------------------------------------------------------------------
