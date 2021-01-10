@@ -5,7 +5,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static norswap.utils.Strings.append;
-import static norswap.utils.Vanilla.pop;
+import static norswap.utils.Strings.pop;
 
 /**
  * Miscellaneous utility functions.

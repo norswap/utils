@@ -864,14 +864,4 @@ public final class Vanilla
 
     // endregion
     // =============================================================================================
-
-    /**
-     * Removes the {@code n} last characters from {@code b}.
-     * @throws NoSuchElementException if the string builder has less than {@code n} characters.
-     */
-    public static void pop (StringBuilder b, int n)
-    {
-        if (b.length() < n) throw new NoSuchElementException();
-        b.replace(b.length() - n, b.length(), "");
-    }
 }
