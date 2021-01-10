@@ -62,7 +62,8 @@ A collection of Java (8+) utilities.
 
 - `Visitor`: a simple map-based visitor.
 - `ValuedVisitor`: a variant of `Visitor` that support returning a value from the visitor method.  
-- `Walker`: a `Visitor` subclass that can 
+- `Walker`: a visitor variant that can be used to perform a depth-first tree walk in pre-, post- or
+  in-order (multiple orders can be used during the same walk).
 
 ## Scaffolding
 
