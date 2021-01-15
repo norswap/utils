@@ -1,7 +1,10 @@
 # norswap.utils
 
 - [Install](doc/INSTALL.md)
-- [Javadoc](https://jitpack.io/com/github/norswap/utils/-SNAPSHOT/javadoc/)
+- [Javadoc] (updates daily) / [Mirror] (might need loading)
+
+[Javadoc]: https://javadoc.io/doc/com.norswap/utils/
+[Mirror]: https://jitpack.io/com/github/norswap/utils/-SNAPSHOT/javadoc/)
 
 ---
 
