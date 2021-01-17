@@ -32,7 +32,9 @@ public final class ValuedVisitor<T, R> implements Function<T, R>
 
         return action == null
             ? fallbackSpecialization == null
-                ? exprThrow(new IllegalArgumentException("no fallback specified for " + this))
+                ? exprThrow(new IllegalArgumentException(String.format(
+                        "no fallback specified for %s (offending value: %s)",
+                                value.getClass(), value)))
                 : fallbackSpecialization.apply(value)
             : action.apply(value);
     }
