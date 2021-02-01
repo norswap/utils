@@ -151,6 +151,31 @@ public final class Strings
     /**
      * Joins the string representation of items in {@code items}, separating them with {@code sep}.
      * This is appended to {@code b}, which is then returned.
+     */
+    public static StringBuilder join (StringBuilder b, String sep, Iterable<?> items)
+    {
+        int length = b.length();
+        for (Object item: items)
+            b.append(item).append(sep);
+        if (b.length() > length)
+            pop(b, sep.length());
+        return b;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     */
+    public static String join (String sep, Iterable<?> items) {
+        return join(new StringBuilder(), sep, items).toString();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     * This is appended to {@code b}, which is then returned.
      *
      * <p>Identical to {@link #join}, but fixes pesky Java warnings when passing an array
      * directly.
