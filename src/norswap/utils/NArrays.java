@@ -41,7 +41,7 @@ public final class NArrays
 
         return index >= 0
             ? index
-            : array.length - index;
+            : array.length + index;
     }
 
     // ---------------------------------------------------------------------------------------------
