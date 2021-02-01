@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 /**
- * Utility functions dealing with strings and string builders
+ * Utility functions dealing with strings and string builders.
  */
 public final class Strings
 {
@@ -124,29 +124,51 @@ public final class Strings
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Adds the string representation of items in {@code items} to {@code b}, separting them
-     * by the separator {@code sep}.
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     * This is appended to {@code b}, which is then returned.
      */
-    public static void separated (StringBuilder b, String sep, Object... items)
+    public static StringBuilder join (StringBuilder b, String sep, Object... items)
     {
         int length = b.length();
         for (Object item: items)
             b.append(item).append(sep);
         if (b.length() > length)
             pop(b, sep.length());
+        return b;
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Adds the string representation of items in {@code items} to {@code b}, separting them
-     * by the separator {@code sep}.
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     */
+    public static String join (String sep, Object... items) {
+        return join(new StringBuilder(), sep, items).toString();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     * This is appended to {@code b}, which is then returned.
      *
-     * <p>Identical to {@link #separated}, but fixes pesky Java warnings when passing an array
+     * <p>Identical to {@link #join}, but fixes pesky Java warnings when passing an array
      * directly.
      */
-    public static void sepArray (StringBuilder b, String sep, Object[] items) {
-        separated(b, sep, items);
+    public static StringBuilder joinArray (StringBuilder b, String sep, Object[] items) {
+        return join(b, sep, items);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Joins the string representation of items in {@code items}, separating them with {@code sep}.
+     *
+     * <p>Identical to {@link #join}, but fixes pesky Java warnings when passing an array
+     * directly.
+     */
+    public static String joinArray (String sep, Object... items) {
+        return joinArray(new StringBuilder(), sep, items).toString();
     }
 
     // ---------------------------------------------------------------------------------------------
