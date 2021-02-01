@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static norswap.utils.NArrays.index;
 import static norswap.utils.Util.cast;
 
 /**
@@ -111,13 +112,13 @@ public final class Vanilla
     /**
      * Return a fixed-size list that contains all items in the array from index {@code start} and
      * onwards. If you need a list that can grow use {@link #arrayListSlice}.
+     *
+     * <p>{@code start} may be negative (see {@link NArrays#index}).
      */
     public static <T> List<T> listSlice (T[] items, int start)
     {
-        if (start < 0 || start > items.length)
-            throw new IndexOutOfBoundsException(
-                    format("start (%s) > items.length (%s)", start, items.length));
-        return Arrays.asList(Arrays.copyOf(items, items.length - start));
+        int index = index(items, start);
+        return Arrays.asList(Arrays.copyOf(items, items.length - index));
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -125,14 +126,14 @@ public final class Vanilla
     /**
      * Return an array list  that contains all items in the array from index {@code start} and
      * onwards. If you don't need the list to grow, use {@link #listSlice}.
+     *
+     * <p>{@code start} may be negative (see {@link NArrays#index}).
      */
     public static <T> ArrayList<T> arrayListSlice (T[] items, int start)
     {
-        if (start < 0 || start > items.length)
-            throw new IndexOutOfBoundsException(
-                    format("start (%s) > items.length (%s)", start, items.length));
-        ArrayList <T> out = new ArrayList<>(items.length - start);
-        out.addAll(Arrays.asList(items).subList(start, items.length));
+        int index = index(items, start);
+        ArrayList <T> out = new ArrayList<>(items.length - index);
+        out.addAll(Arrays.asList(items).subList(index, items.length));
         return out;
     }
 
@@ -142,37 +143,24 @@ public final class Vanilla
      * Return a fixed-size list that contains all items in the array in the {@code [start, end[}
      * range. If you need a list that can grow use {@link #arrayListSlice(Object[], int, int)}.
      *
-     * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
-     * as {@code items.length - 1}.
+     * <p>{@code start} and {@code end} may be negative (see {@link NArrays#index}).
      */
-    public static <T> List<T> listSlice (T[] items, int start, int end)
-    {
-        if (end < 0) end = items.length + end;
-
-        if (start < 0 || end < 0 || end > items.length || start > end)
-            throw new IndexOutOfBoundsException(
-                    format("invalid range [%s, %s[ for items.length (%s)", start, end, items.length));
-
-        return Arrays.asList(Arrays.copyOfRange(items, start, end));
+    public static <T> List<T> listSlice (T[] items, int start, int end) {
+        return Arrays.asList(Arrays.copyOfRange(items, index(items, start), index(items, end)));
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    /**
+    /**s
      * Return an array list  that contains all items in the array in the {@code [start, end[} range.
      * If you don't need the list to grow, use {@link #listSlice(Object[], int, int)}.
      *
-     * <p>If the end index is negative, it indexes backwards, so that {@code -1} is treated the same
-     * as {@code items.length - 1}.
+     * <p>{@code start} and {@code end} may be negative (see {@link NArrays#index}).
      */
     public static <T> ArrayList<T> arrayListSlice (T[] items, int start, int end)
     {
-        if (end < 0) end = items.length + end;
-
-        if (start < 0 || end < 0 || end > items.length || start > end)
-            throw new IndexOutOfBoundsException(
-                    format("invalid range [%s, %s[ for items.length (%s)", start, end, items.length));
-
+        start = index(items, start);
+        end = index(items, end);
         ArrayList <T> out = new ArrayList<>(end - start);
         out.addAll(Arrays.asList(items).subList(start, end));
         return out;
