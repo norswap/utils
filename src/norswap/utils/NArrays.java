@@ -19,6 +19,34 @@ public final class NArrays
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Indexes {@code array} with {@code index}, but also support negative indices, where -1
+     * accesses the last element of the array.
+     */
+    public static <T> T access (T[] array, int index) {
+        return array[index(array, index)];
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Normalizes {@code index} relatively to {@code array}: if it is negative, it is
+     * turned into a positive index, such that -1 designates the last item of the array.
+     * @throws ArrayIndexOutOfBoundsException if the index is out of bounds
+     */
+    public static <T> int index (Object[] array, int index)
+    {
+        if (index < -array.length || index >= array.length)
+            throw new ArrayIndexOutOfBoundsException(
+                String.format("index(%d) with size %d", index, array.length));
+
+        return index >= 0
+            ? index
+            : array.length - index;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns an array obtained by applying the function {@code f} to each item in {@code array}.
      *
      * <p>The {@code witness} is any array with the proper type (including a zero-sized one). This
@@ -155,6 +183,7 @@ public final class NArrays
     /**
      * Returns a copy of array with the items in {@code items} appended at the end.
      */
+    @SafeVarargs
     public static <T> T[] append (T[] array, T... items)
     {
         T[] copy = Arrays.copyOf(array, array.length + items.length);
