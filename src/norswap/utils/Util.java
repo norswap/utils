@@ -17,9 +17,9 @@ public final class Util
     /**
      * Casts the object to type T, which may be inferred.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T cast (Object obj)
     {
-        // noinspection unchecked
         return (T) obj;
     }
 
