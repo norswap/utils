@@ -1,8 +1,10 @@
 package norswap.utils.multimap;
 
+import norswap.utils.data.wrappers.Pair;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 abstract class AbstractMultiHashMap<K, V>
         extends HashMap<K, Collection<V>>
@@ -88,6 +90,14 @@ abstract class AbstractMultiHashMap<K, V>
         Collection<V> out = computeIfAbsent(key, k -> newCollection());
         out.addAll(values);
         return out;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    @Override public Stream<Pair<K, V>> pairs()
+    {
+        return entrySet().stream().flatMap(e ->
+                e.getValue().stream().map(v -> new Pair<>(e.getKey(), v)));
     }
 
     // ---------------------------------------------------------------------------------------------

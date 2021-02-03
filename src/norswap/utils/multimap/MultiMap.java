@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 /**
  * An extension of a regular {@code K -> Collection<V>} map to enable/improve its use as a multimap:
- * a map from  {@code K} to a collection of invididual {@code V} values.
+ * a map from {@code K} to a collection of invididual {@code V} values.
  */
 public interface MultiMap<K, V> extends Map<K, Collection<V>>
 {
@@ -80,6 +82,14 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
      * @return The collection of values associated with the key after the operation has taken place.
      */
     Collection<V> addAll (K key, Iterable<V> values);
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a stream enumerating all the (key, value) pairs in the multimap (i.e, keys are
+     * repeated for each associated value).
+     */
+    Stream<Pair<K, V>> pairs();
 
     // ---------------------------------------------------------------------------------------------
 
@@ -160,6 +170,31 @@ public interface MultiMap<K, V> extends Map<K, Collection<V>>
             add(pair.a, pair.b);
         }
         return this;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a {@link Collector} that extracts keys and values from each item and this entry
+     * to the multimap.
+     */
+    static <T, K, V> MultiMapCollector<T, K, V>
+    collector (Function<T, K> keyExtractor, Function<T, V> valueExtractor) {
+        return new MultiMapCollector<>(false, keyExtractor, valueExtractor);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a {@link Collector} that extracts keys and values from each item and this entry
+     * to the multimap.
+     *
+     * <p>The returned multimap will be a {@link MultiHashSetMap}, so values will be automatically
+     * de-duplicated.
+     */
+    static <T, K, V> MultiMapCollector<T, K, V>
+    setCollector (Function<T, K> keyExtractor, Function<T, V> valueExtractor) {
+        return new MultiMapCollector<>(true, keyExtractor, valueExtractor);
     }
 
     // ---------------------------------------------------------------------------------------------
