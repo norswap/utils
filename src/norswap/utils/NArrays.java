@@ -29,6 +29,31 @@ public final class NArrays
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Set the {@code array} at {@code index}, but also support negative indices, where -1
+     * accesses the last element of the array.
+     * <p>The assigned value is returned.
+     */
+    public static <T> T set (T[] array, int index, T value) {
+        return array[index(array, index)] = value;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Set the {@code array} at {@code index}, but also support negative indices, where -1
+     * accesses the last element of the array.
+     * <p>The old value at that position in the array is returned.
+     */
+    public static <T> T swap (T[] array, int index, T value) {
+        index = index(array, index);
+        T old = array[index];
+        array[index] = value;
+        return old;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Normalizes {@code index} relatively to {@code array}: if it is negative, it is
      * turned into a positive index, such that -1 designates the last item of the array.
      * @throws ArrayIndexOutOfBoundsException if the index is out of bounds

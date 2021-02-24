@@ -11,6 +11,65 @@ public final class Strings
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Normalizes {@code index} relatively to {@code string}: if it is negative, it is
+     * turned into a positive index, such that -1 designates the last item of the string.
+     * @throws ArrayIndexOutOfBoundsException if the index is out of bounds
+     */
+    public static int index (String string, int index)
+    {
+        if (index < -string.length() || index >= string.length())
+            throw new ArrayIndexOutOfBoundsException(
+                    String.format("index(%d) with size %d", index, string.length()));
+
+        return index >= 0
+                ? index
+                : string.length() + index;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Juste like {@link String#subSequence(int, int)} but the first index may be negative (where -1
+     * is the index of the last character), and the second index is implicitly the end of the
+     * string.
+     */
+    public static CharSequence subSequence (String string, int start) {
+        return string.subSequence(index(string, start), string.length());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Juste like {@link String#substring(int)} but the index may be negative, where -1 is the index
+     * of the last character.
+     */
+    public static CharSequence substring (String string, int start) {
+        return string.substring(index(string, start));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Juste like {@link String#subSequence(int, int)} but the indices may be negative, where -1 is
+     * the index of the last character.
+     */
+    public static CharSequence subSequence (String string, int start, int end) {
+        return string.subSequence(index(string, start), index(string, end));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Juste like {@link String#substring(int)} (int, int)} but the indices may be negative, using
+     * {@link #index(String, int)}.
+     */
+    public static CharSequence substring (String string, int start, int end) {
+        return string.substring(index(string, start), index(string, end));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns the last character of the string, or throws an exception if the string is empty.
      */
     public static char lastChar (String string)
@@ -214,6 +273,39 @@ public final class Strings
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Return a capitalized version of string: the first character is uppercased.
+     * <p>If you want to also force lowercase the rest of the string, use {@link #capitalizedForm}.
+     * <p>Doesn't work on empty strings.
+     */
+    public static String capitalize (String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a capitalized version of the string: the first character is uppercased and the other
+     * characters are lowercased.
+     * <p>If you just want to uppercase the first character, use {@link #capitalize}.
+     * <p>Doesn't work on empty strings.
+     */
+    public static String capitalizedForm (String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a copy of the string with the first character lowercased.
+     * <p>Doesn't work on empty strings.
+     */
+    public static String uncapitalize (String string) {
+        return string.substring(0, 1).toLowerCase() + string.substring(1);
     }
 
     // ---------------------------------------------------------------------------------------------
