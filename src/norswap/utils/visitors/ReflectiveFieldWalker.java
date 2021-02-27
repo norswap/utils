@@ -10,7 +10,8 @@ import java.util.List;
 
 /**
  * Implementation of {@link Walker} where the children of a node of type {@code T} are
- * take to be all accessible fields of the node whose value is assignable to {@code T}.
+ * take to be all accessible fields of the node whose value is assignable to {@code T}, or are
+ * instances of {@link Collection} parameterized with with type {@code T}.
  *
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * accessor methods instead of fields.
