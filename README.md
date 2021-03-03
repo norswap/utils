@@ -13,6 +13,7 @@ A collection of Java (8+) utilities.
 ## General Utilities
 
 - `Chance`: Utility functions for random number generation based on a private `Random` instance.
+- `Concurrency`: Utility functions dealing with concurrency and asynchronicity (futures etc).
 - `IO`: Utility functions for input/output.
 - `NFiles`: Utility funcitons for dealing with files and paths.
 - `Predicates`: Utilities for dealing with predicate functions.
