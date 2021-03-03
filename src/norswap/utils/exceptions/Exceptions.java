@@ -54,7 +54,7 @@ public final class Exceptions
 
     /**
      * Returns a version of the runnable that wraps its thrown checked exception in a {@link
-     * RuntimeException}.
+     * NoStackException}.
      */
     public static Runnable unchecked (ThrowingRunnable runnable) {
         return () -> suppress(runnable);
@@ -64,7 +64,7 @@ public final class Exceptions
 
     /**
      * Returns a version of the runnable that wraps its thrown checked exception in a {@link
-     * RuntimeException}.
+     * NoStackException}.
      */
     public static <T> Supplier<T> unchecked (ThrowingSupplier<T> supplier) {
         return () -> suppress(supplier);
@@ -74,7 +74,7 @@ public final class Exceptions
 
     /**
      * Returns a version of the runnable that wraps its thrown checked exception in a {@link
-     * RuntimeException}.
+     * NoStackException}.
      */
     public static <T> Consumer<T> unchecked (ThrowingConsumer<T> consumer) {
         return it -> {
@@ -83,7 +83,7 @@ public final class Exceptions
             } catch (Error | RuntimeException e) {
                 throw e;
             } catch (Throwable t) {
-                throw new RuntimeException(t);
+                throw new NoStackException(t);
             }
         };
     }
@@ -92,7 +92,7 @@ public final class Exceptions
 
     /**
      * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
-     * might throw bu wrapping it in a {@link RuntimeException}.
+     * might throw bu wrapping it in a {@link NoStackException}.
      */
     public static void suppress (ThrowingRunnable runnable) {
         try {
@@ -100,7 +100,7 @@ public final class Exceptions
         } catch (RuntimeException | Error e) {
             throw e;
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            throw new NoStackException(t);
         }
     }
 
@@ -108,7 +108,7 @@ public final class Exceptions
 
     /**
      * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
-     * might throw bu wrapping it in a {@link RuntimeException}.
+     * might throw but wrapping it in a {@link NoStackException}.
      */
     public static <T> T suppress (ThrowingSupplier<T> supplier) {
         try {
@@ -116,7 +116,7 @@ public final class Exceptions
         } catch (RuntimeException | Error e) {
             throw e;
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            throw new NoStackException(t);
         }
     }
 
@@ -124,7 +124,7 @@ public final class Exceptions
 
     /**
      * Rethrows {@code t} as-is if it isn't a checked exception, otherwise wraps it in
-     * a {@link RuntimeException} before rethrowing it.
+     * a {@link NoStackException} before rethrowing it.
      */
     public static void rethrow (Throwable t) {
         if (t instanceof RuntimeException)
@@ -132,7 +132,7 @@ public final class Exceptions
         if (t instanceof Error)
             throw (Error) t;
         else
-            throw new RuntimeException(t);
+            throw new NoStackException(t);
     }
 
     // ---------------------------------------------------------------------------------------------
