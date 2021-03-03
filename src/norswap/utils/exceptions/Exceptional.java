@@ -3,7 +3,8 @@ package norswap.utils.exceptions;
 import java.util.function.Function;
 
 /**
- * Either wraps a value of type {@code T} or a runtime exception.
+ * Either wraps a value of type {@code T} or a throwable (which we'll abusively call "exception",
+ * it just rolls better off the tongue, doesn't it?).
  *
  * <p>Construct instances of this class with the {@link #value(Object)} or one of the
  * {@link #exception} methods.
@@ -13,12 +14,11 @@ public final class Exceptional<T>
     // ---------------------------------------------------------------------------------------------
 
     private final T value;
-    private final RuntimeException exception;
+    private final Throwable exception;
 
     // ---------------------------------------------------------------------------------------------
 
-    private Exceptional (T value, RuntimeException exception)
-    {
+    private Exceptional (T value, Throwable exception) {
         this.value = value;
         this.exception = exception;
     }
@@ -26,31 +26,32 @@ public final class Exceptional<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Creates an {@link Exceptional} instance by running the given supplier and wrapping its
+     * result or thrown exception.
+     */
+    public static <T> Exceptional<T> of (ThrowingSupplier<T> supplier) {
+        try {
+            return Exceptional.value(supplier.get());
+        } catch (Throwable t) {
+            return Exceptional.exception(t);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns a new exceptional holding the given value.
      */
-    public static <T> Exceptional<T> value (T value)
-    {
+    public static <T> Exceptional<T> value (T value) {
         return new Exceptional<>(value, null);
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Returns a new exceptional holding a stackless runtime exception having the given throwable
-     * as its cause.
+     * Returns a new exceptional holding the given exception.
      */
-    public static <T> Exceptional<T> exception (Throwable throwable)
-    {
-        return new Exceptional<>(null, new NoStackException(throwable));
-    }
-
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a new exception holding the given exception.
-     */
-    public static <T> Exceptional<T> exception (RuntimeException exception)
-    {
+    public static <T> Exceptional<T> exception (Throwable exception) {
         return new Exceptional<>(null, exception);
     }
 
@@ -60,19 +61,19 @@ public final class Exceptional<T>
      * Returns a new exceptional holding a stackless runtime exception having the given
      * string as its message.
      */
-    public static <T> Exceptional<T> error (String message)
-    {
+    public static <T> Exceptional<T> error (String message) {
         return new Exceptional<>(null, new NoStackException(message));
     }
 
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * If this object holds a value, returns it, otherwise throws the held exception.
+     * If this object holds a value, returns it, otherwise throws the held exception (wrapped in
+     * a {@link RuntimeException} as per {@link Exceptions#rethrow(Throwable)}, if it is a
+     * checked exception).
      */
-    public T get()
-    {
-        if (exception != null) throw exception;
+    public T get() {
+        if (exception != null) Exceptions.rethrow(exception);
         return value;
     }
 
@@ -83,8 +84,7 @@ public final class Exceptional<T>
      *
      * <p>Note that held values might also be null!
      */
-    public T nullable()
-    {
+    public T nullable() {
         return exception == null ? value : null;
     }
 
@@ -93,8 +93,7 @@ public final class Exceptional<T>
     /**
      * Returns the underlying value or exception.
      */
-    public Object unwrap()
-    {
+    public Object unwrap() {
         return exception == null ? value : exception;
     }
 
@@ -103,8 +102,7 @@ public final class Exceptional<T>
     /**
      * Returns the exception held by this object, or null if it holds a value instead.
      */
-    public RuntimeException exception()
-    {
+    public Throwable exception() {
         return exception;
     }
 
@@ -132,8 +130,7 @@ public final class Exceptional<T>
      * If this object holds a value, returns a new exceptional holding the result of applying
      * {@code f} to the value, else returns a new exceptional holding the exception.
      */
-    public <R> Exceptional<R> map (Function<T, R> f)
-    {
+    public <R> Exceptional<R> map (Function<T, R> f) {
         return exception == null
             ? Exceptional.value(f.apply(value))
             : Exceptional.exception(exception);
@@ -145,8 +142,7 @@ public final class Exceptional<T>
      * If this object holds a value, returns the result of applying {@code f} to the value,
      * else returns a new exceptional holding the exception.
      */
-    public <R> Exceptional<R> flatmap (Function<T, Exceptional<R>> f)
-    {
+    public <R> Exceptional<R> flatmap (Function<T, Exceptional<R>> f) {
         return exception == null
             ? f.apply(value)
             : Exceptional.exception(exception);
@@ -157,8 +153,7 @@ public final class Exceptional<T>
     /**
      * If the object holds an exception, return its message, otherwise returns the string "success".
      */
-    public String message()
-    {
+    public String message() {
         return exception == null
             ?  "success"
             : exception.getMessage();
