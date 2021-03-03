@@ -48,4 +48,36 @@ public final class Concurrency {
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Attempt to sleep for the requested number of milliseconds, but can be interrupted before.
+     * Does not throw an exception if interrupted.
+     */
+    public static void sleepLax (long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            // interrupted
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Sleep for the requested number of milliseconds.
+     */
+    @SuppressWarnings("BusyWait")
+    public static void sleep (long milliseconds) {
+        long start = System.currentTimeMillis();
+        while (true)
+            try {
+                long elapsed = System.currentTimeMillis() - start;
+                if (elapsed > milliseconds) return;
+                Thread.sleep(milliseconds - elapsed);
+            } catch (InterruptedException e) {
+                // interrupted
+            }
+    }
+
+    // ---------------------------------------------------------------------------------------------
 }
