@@ -3,6 +3,8 @@ package norswap.utils.exceptions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static norswap.utils.Util.cast;
 
@@ -46,6 +48,44 @@ public final class Exceptions
     public static <T extends Throwable> T trimStackTrace (int peel, T throwable) {
         throwable.setStackTrace(trimStackTrace(peel, throwable.getStackTrace()));
         return throwable;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a version of the runnable that wraps its thrown checked exception in a {@link
+     * RuntimeException}.
+     */
+    public static Runnable unchecked (ThrowingRunnable runnable) {
+        return () -> suppress(runnable);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a version of the runnable that wraps its thrown checked exception in a {@link
+     * RuntimeException}.
+     */
+    public static <T> Supplier<T> unchecked (ThrowingSupplier<T> supplier) {
+        return () -> suppress(supplier);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a version of the runnable that wraps its thrown checked exception in a {@link
+     * RuntimeException}.
+     */
+    public static <T> Consumer<T> unchecked (ThrowingConsumer<T> consumer) {
+        return it -> {
+            try {
+                consumer.accept(it);
+            } catch (Error | RuntimeException e) {
+                throw e;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
     }
 
     // ---------------------------------------------------------------------------------------------
