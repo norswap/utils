@@ -1,12 +1,18 @@
 package norswap.utils;
 
 import norswap.utils.data.wrappers.Pair;
+import norswap.utils.exceptions.Exceptions;
+import norswap.utils.exceptions.NoStackException;
+import norswap.utils.exceptions.ThrowingConsumer;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -189,6 +195,55 @@ public final class IO
         } finally {
             if (task != null) task.run();
         }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Executes the given action with a file writer for the given file. Ensures that the writer
+     * is closed when the action completes (normally or with an exception).
+     *
+     * <p>Thrown checked exceptions will be wrapped in a {@link NoStackException}.
+     *
+     * <p>If {@code append} is true, the file will be appended to instead of being truncated.
+     */
+    public static void withFileWriter (String file, boolean append, ThrowingConsumer<BufferedWriter> action)
+    {
+        // The buffered writer will also close the file writer.
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
+            action.accept(writer);
+        } catch (Throwable t) {
+            Exceptions.rethrow(t);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Same as {@link #withFileWriter(String, boolean, ThrowingConsumer)}, but always truncates the
+     * written file.
+     */
+    public static void withFileWriter (String file, ThrowingConsumer<BufferedWriter> action) {
+        withFileWriter(file, false, action);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Same as {@link #withFileWriter(String, boolean, ThrowingConsumer)}, but accepts a {@link Path}.
+     */
+    public static void withFileWriter (Path path, boolean append, ThrowingConsumer<BufferedWriter> action) {
+        withFileWriter(path.toString(), append, action);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Same as {@link #withFileWriter(String, boolean, ThrowingConsumer)}, but accepts a {@link
+     * Path} and always truncates the written file.
+     */
+    public static void withFileWriter (Path path, ThrowingConsumer<BufferedWriter> action) {
+        withFileWriter(path.toString(), false, action);
     }
 
     // ---------------------------------------------------------------------------------------------
