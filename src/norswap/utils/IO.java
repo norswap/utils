@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 import java.util.function.Supplier;
 
 /**
@@ -165,6 +167,24 @@ public final class IO
     // NOTE: To make all of this thread-safe, it would suffice to set stdout, stderr and stdin to
     // custom stream classes that delegate (all their methods) to inheritable thread-local streams.
     // Then, we can just change the thread-local temporarily.
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Wait until the user enters a line on stdin, then run the passed task.
+     */
+    public static void waitForInput (Runnable task)
+    {
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.println("Press ENTER to continue.");
+            String line = scanner.nextLine();
+        } catch (IllegalStateException | NoSuchElementException e) {
+            // stdin was closed
+        } finally {
+            task.run();
+        }
+    }
 
     // ---------------------------------------------------------------------------------------------
 }
