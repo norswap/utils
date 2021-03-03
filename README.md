@@ -36,6 +36,7 @@ A collection of Java (8+) utilities.
 (`data.wrappers` package)
 
 - `Indexed`: A pair made out of an integer and a value.
+- `Maybe`: Better alternative to `java.util.Optional` that notably supports `null` values.
 - `Pair`: A simple type for a pair of values.
 - `Slot`: A simple wrapper for a single value, useful when dealing with lambda capture and mutation.
 
