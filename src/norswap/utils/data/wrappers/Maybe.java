@@ -50,8 +50,8 @@ public final class Maybe<T>
      * Converts the optional to the far superior {@link Maybe}.
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static <T> Maybe<T> from (Optional<T> optional) {
-        return optional.map(Maybe::new).orElseGet(Maybe::empty);
+    public static <T> Maybe<T> from (Optional<? extends T> optional) {
+        return Util.cast(optional.map(Maybe::new).orElseGet(Maybe::empty));
     }
 
     // ---------------------------------------------------------------------------------------------

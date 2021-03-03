@@ -32,7 +32,7 @@ public final class Exceptional<T>
      * Creates an {@link Exceptional} instance by running the given supplier and wrapping its
      * result or thrown exception.
      */
-    public static <T> Exceptional<T> of (ThrowingSupplier<T> supplier) {
+    public static <T> Exceptional<T> of (ThrowingSupplier<? extends T> supplier) {
         try {
             return Exceptional.value(supplier.get());
         } catch (Throwable t) {
@@ -141,7 +141,7 @@ public final class Exceptional<T>
     /**
      * Runs the consumer on the exception, if there is one.
      */
-    public void ifException (Consumer<Throwable> consumer) {
+    public void ifException (Consumer<? super Throwable> consumer) {
         if (exception != null) consumer.accept(exception);
     }
 
@@ -164,7 +164,7 @@ public final class Exceptional<T>
      * If this object holds a value, returns a new exceptional holding the result of applying
      * {@code f} to the value, else returns a new exceptional holding the exception.
      */
-    public <R> Exceptional<R> map (Function<T, R> f) {
+    public <R> Exceptional<R> map (Function<? super T, ? extends R> f) {
         return exception == null
             ? Exceptional.value(f.apply(value))
             : Exceptional.exception(exception);
@@ -188,7 +188,7 @@ public final class Exceptional<T>
      * If this object holds a value, returns the result of applying {@code f} to the value,
      * else returns a new exceptional holding the exception.
      */
-    public <R> Exceptional<R> flatmap (Function<T, Exceptional<R>> f) {
+    public <R> Exceptional<R> flatmap (Function<? super T, Exceptional<R>> f) {
         return exception == null
             ? f.apply(value)
             : Exceptional.exception(exception);
