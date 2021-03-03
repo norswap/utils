@@ -12,7 +12,7 @@ plugins {
 // === MAIN BUILD DETAILS ==========================================================================
 
 group = "com.norswap"
-version = "2.1.7"
+version = "2.1.8"
 description = "A collection of Java (8+) utilities"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
