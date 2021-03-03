@@ -6,11 +6,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static norswap.utils.exceptions.Exceptions.suppress;
+
 /**
- * Utilities to deal with asynchronous calls, futures, ...
+ * Utility functions dealing with concurrency and asynchronicity (futures etc).
  */
-public final class Async {
-    private Async() {}
+public final class Concurrency {
+    private Concurrency () {}
 
     // ---------------------------------------------------------------------------------------------
 
@@ -29,6 +31,20 @@ public final class Async {
         } catch (InterruptedException | ExecutionException e) {
             time = System.currentTimeMillis();
         }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Causes the current thread to wait forever (and thus never terminate unless forcibly
+     * terminated).
+     *
+     * @see IO#waitForInput(Runnable)
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void waitForever() {
+        while (true)
+            suppress(() -> Thread.currentThread().join());
     }
 
     // ---------------------------------------------------------------------------------------------

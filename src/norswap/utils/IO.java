@@ -12,6 +12,8 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
+import static norswap.utils.exceptions.Exceptions.suppress;
+
 /**
  * Input/Output related utilities.
  */
@@ -171,7 +173,10 @@ public final class IO
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Wait until the user enters a line on stdin, then run the passed task.
+     * Wait until the user enters a line on stdin, then run the passed task (if null, simply
+     * waits).
+     *
+     * @see Concurrency#waitForever()
      */
     public static void waitForInput (Runnable task)
     {
@@ -182,7 +187,7 @@ public final class IO
         } catch (IllegalStateException | NoSuchElementException e) {
             // stdin was closed
         } finally {
-            task.run();
+            if (task != null) task.run();
         }
     }
 
