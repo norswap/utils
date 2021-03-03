@@ -49,8 +49,8 @@ A collection of Java (8+) utilities.
 
 - `Exceptional`: Either wraps a value or an exception.
 - `NoStackException`: A `RuntimeException` that does not fill the stack trace.
-- `ThrowingSupplier`: Just like `java.util.function.Supplier`, but allowed to throw exceptions.
-- `ThrowingRunnable`: Just like `java.lang.Runnable`, but allowd to throw exceptions.
+- `Throwing{Runnable, Consumer, Supplier}`: Just like `java.lang.Runnable` /
+  `java.util.function.{Consumer, Supplier}`, but allowed to throw exceptions.
 - `Exceptions`: Utility functions dealing with exceptions and stack traces.
 
 ## Reflection
