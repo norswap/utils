@@ -132,6 +132,18 @@ public final class Maybe<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Calls {@code ifValue} on the value if present, otherwise calls {@code ifException}.
+     */
+    public void ifElse (Consumer<? super T> ifValue, Runnable ifException) {
+        if (value != NOTHING)
+            ifValue.accept(value);
+        else
+            ifException.run();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * Returns a {@link Maybe} containing the result of applying the function to the value, if
      * present. Otherwise, an empty {@link Maybe} will be returned.
      */

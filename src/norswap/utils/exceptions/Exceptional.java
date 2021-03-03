@@ -1,6 +1,9 @@
 package norswap.utils.exceptions;
 
+import norswap.utils.data.wrappers.Maybe;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Either wraps a value of type {@code T} or a throwable (which we'll abusively call "exception",
@@ -127,6 +130,37 @@ public final class Exceptional<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Runs the consumer on the value, if there is one.
+     */
+    public void ifValue (Consumer<? super T> consumer) {
+        if (exception == null) consumer.accept(value);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Runs the consumer on the exception, if there is one.
+     */
+    public void ifException (Consumer<Throwable> consumer) {
+        if (exception != null) consumer.accept(exception);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Calls {@code ifValue} on the value if present, otherwise calls {@code ifException} on the
+     * exception.
+     */
+    public void ifElse (Consumer<? super T> ifValue, Consumer<? super Throwable> ifException) {
+        if (exception == null)
+            ifValue.accept(value);
+        else
+            ifException.accept(exception);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * If this object holds a value, returns a new exceptional holding the result of applying
      * {@code f} to the value, else returns a new exceptional holding the exception.
      */
@@ -139,6 +173,18 @@ public final class Exceptional<T>
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * Returns the result of calling {@code ifValue} on the value if present, otherwise the
+     * result of calling {@code ifException} on the exception.
+     */
+    public <R> R map (Function<? super T, ? extends R> ifValue, Function<Throwable, ? extends R> ifException) {
+        return exception == null
+            ? ifValue.apply(value)
+            : ifException.apply(exception);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
      * If this object holds a value, returns the result of applying {@code f} to the value,
      * else returns a new exceptional holding the exception.
      */
@@ -146,6 +192,18 @@ public final class Exceptional<T>
         return exception == null
             ? f.apply(value)
             : Exceptional.exception(exception);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Converts the exceptional to a {@link Maybe}. If this contains an exception, an empty {@link
+     * Maybe} is returned.
+     */
+    public Maybe<T> toMaybe() {
+        return exception != null
+            ? Maybe.empty()
+            : new Maybe<>(value);
     }
 
     // ---------------------------------------------------------------------------------------------
