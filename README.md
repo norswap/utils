@@ -4,7 +4,7 @@
 - [Javadoc] (updates daily) / [Mirror] (might need loading)
 
 [Javadoc]: https://javadoc.io/doc/com.norswap/utils/
-[Mirror]: https://jitpack.io/com/github/norswap/utils/-SNAPSHOT/javadoc/)
+[Mirror]: https://jitpack.io/com/github/norswap/utils/-SNAPSHOT/javadoc/
 
 ---
 
