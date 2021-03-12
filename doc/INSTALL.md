@@ -1,11 +1,12 @@
 # Install norswap.utils
 
-The project's artifacts are hosted on [Bintray] and available from JCenter.
+The project's artifacts are hosted on [Maven Central], and on a public [Artifactory repository].
 
-It's also possible to use [JitPack] as an alternative (detailed instructions not provided).
+The only difference is that new releases will land on the artifactory repository a few hours
+earlier.
 
-[Bintray]: https://bintray.com/norswap/maven/utils
-[JitPack]: https://jitpack.io/#norswap/utils
+[Maven Central]: https://search.maven.org/artifact/com.norswap/utils/
+[Artifactory repository]: https://norswap.jfrog.io/artifactory/maven/
 
 ## Using Gradle
 
@@ -14,12 +15,16 @@ With the Kotlin DSL (`build.gradle.kts`):
 ```kotlin
 repositories {
     // ...
-    jcenter()
+    mavenCentral()
+    // and/or:
+    maven {
+        url = uri("https://norswap.jfrog.io/artifactory/maven")
+    }
 }
 
 dependencies {
     // ...
-    implementation("com.norswap:utils:2.0.0")
+    implementation("com.norswap:utils:2.1.8")
 }
 ```
 
@@ -28,12 +33,16 @@ With the Groovy DSL (`build.gradle`):
 ```groovy
 repositories {
     // ...
-    jcenter()
+    mavenCentral()
+    // and/or:
+    maven {
+        url 'https://norswap.jfrog.io/artifactory/maven'
+    }
 }
 
 dependencies {
     // ...
-    implementation 'com.norswap:utils:2.0.0'
+    implementation 'com.norswap:utils:2.1.8'
 }
 ```
 
@@ -45,10 +54,11 @@ In `pom.xml`:
 <project>
   ...
   <repositories>
-    ...__
+    ...
+    <!-- no repository declaration needed for using Maven Central -->
     <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com</url>
+        <id>artifactory-norswap</id>
+        <url>https://norswap.jfrog.io/artifactory/maven</url>
     </repository>
   </repositories>
   <dependencies>
@@ -56,7 +66,7 @@ In `pom.xml`:
     <dependency>
       <groupId>com.norswap</groupId>
       <artifactId>utils</artifactId>
-      <version>2.0.0</version>
+      <version>2.1.8</version>
     </dependency>  
   </dependencies>
 </project>
