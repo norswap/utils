@@ -3,7 +3,6 @@ package norswap.utils.exceptions;
 import norswap.utils.data.wrappers.Maybe;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Either wraps a value of type {@code T} or a throwable (which we'll abusively call "exception",

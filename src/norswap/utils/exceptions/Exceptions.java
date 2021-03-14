@@ -125,6 +125,10 @@ public final class Exceptions
     /**
      * Rethrows {@code t} as-is if it isn't a checked exception, otherwise wraps it in
      * a {@link NoStackException} before rethrowing it.
+     *
+     * <p>Sometimes, one would like to write {@code throw rethrow(t)}, to give Java a hint
+     * that the method always throws. To that effect, the {@link #runtime(Throwable)} method
+     * was introduced.
      */
     public static void rethrow (Throwable t) {
         if (t instanceof RuntimeException)
@@ -138,9 +142,29 @@ public final class Exceptions
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Equivalent to a throw statement (actually to {@link #rethrow(Throwable)} - in that
-     * checked exceptions are wrapped), but can be called in an expression position. Reports
-     * a bogus inferred return type (bogus because this always throws and never returns).
+     * Rethrows {@code t} as-is if it isn't a checked exception, otherwise wraps it in
+     * a {@link NoStackException} before rethrowing it.
+     *
+     * <p>This method always throws, but you should always use this method as {@code throw
+     * runtime(t)}, which gives Java - and the reader - a hint that the method always throws.
+     * Alternatively, use {@link #rethrow(Throwable)}}, whose name is clearer but does not help
+     * Java's dataflow analysis.
+     */
+    public static RuntimeException runtime (Throwable t) {
+        if (t instanceof RuntimeException)
+            throw (RuntimeException) t;
+        if (t instanceof Error)
+            throw (Error) t;
+        else
+            throw new NoStackException(t);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Equivalent to a throw statement (actually to {@link #rethrow(Throwable)} - in that checked
+     * exceptions are wrapped), but can be called in an expression position. Reports a bogus
+     * inferred return type (bogus because this always throws and never returns).
      */
     public static <T> T exprThrow (Throwable t) {
         rethrow(t);
