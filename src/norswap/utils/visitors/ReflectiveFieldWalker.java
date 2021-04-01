@@ -3,15 +3,17 @@ package norswap.utils.visitors;
 import norswap.utils.reflection.GenericType;
 import norswap.utils.reflection.Subtyping;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation of {@link Walker} where the children of a node of type {@code T} are
- * take to be all accessible fields of the node whose value is assignable to {@code T}, or are
- * instances of {@link Collection} parameterized with with type {@code T}.
+ * Implementation of {@link Walker} where the children of a node of type {@code T} are take to be
+ * all accessible (public) fields of the node whose value is assignable to {@code T}, or are
+ * instances of {@link Collection} parameterized with with type {@code T}. Static fields are
+ * ignored.
  *
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * accessor methods instead of fields.
@@ -35,6 +37,7 @@ public final class ReflectiveFieldWalker<T> extends ReflectiveWalker<T>
         try {
             for (Field field: klass.getFields())
             {
+                if (Modifier.isStatic(field.getModifiers())) continue;
                 Type fieldType = field.getGenericType();
                 if (Subtyping.check(fieldType, nodeType))
                     list.add(new HandleWrapper(lookup.unreflectGetter(field), false));

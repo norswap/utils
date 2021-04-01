@@ -3,6 +3,7 @@ package norswap.utils.visitors;
 import norswap.utils.reflection.GenericType;
 import norswap.utils.reflection.Subtyping;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +11,9 @@ import java.util.List;
 
 /**
  * Implementation of {@link Walker} where the children of a node of type {@code T} are take to be
- * all accessible zero-argument methods of the node whose return value is assignable to {@code T},
- * or are instances of {@link Collection} parameterized with with type {@code T}.
+ * all accessible (public) zero-argument methods of the node whose return value is assignable to
+ * {@code T}, or are instances of {@link Collection} parameterized with with type {@code T}. Static
+ * methods are ignored.
  *
  * @see ReflectiveAccessorWalker ReflectiveAccessorWalker for something similar that uses
  * fields instead of accessor methods.
@@ -36,6 +38,7 @@ public final class ReflectiveAccessorWalker<T> extends ReflectiveWalker<T>
             for (Method method: klass.getMethods())
             {
                 if (method.getParameterCount() > 0) continue;
+                if (Modifier.isStatic(method.getModifiers())) continue;
                 Type accessorType = method.getGenericReturnType();
                 if (Subtyping.check(accessorType, nodeType))
                     list.add(new HandleWrapper(lookup.unreflect(method), false));
