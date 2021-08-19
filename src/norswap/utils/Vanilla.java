@@ -90,15 +90,15 @@ public final class Vanilla
         for (Object item: items)
         {
             /**/ if (item instanceof Object[])
-            addArray(col, items);
-        else if (item instanceof Iterable<?>)
-            addAll(col, cast(item));
-        else if (item instanceof Enumeration<?>)
-            col.addAll(Collections.list((Enumeration<?>) item));
-        else if (item instanceof Stream<?>)
-            ((Stream<?>) item).forEachOrdered(col::add);
-        else
-            col.add(item);
+                addArray(col, item);
+            else if (item instanceof Iterable<?>)
+                addAll(col, cast(item));
+            else if (item instanceof Enumeration<?>)
+                col.addAll(Collections.list((Enumeration<?>) item));
+            else if (item instanceof Stream<?>)
+                ((Stream<?>) item).forEachOrdered(col::add);
+            else
+                col.add(item);
         }
 
         return col;
