@@ -43,7 +43,7 @@ public final class Strings
      * Juste like {@link String#substring(int)} but the index may be negative, where -1 is the index
      * of the last character.
      */
-    public static CharSequence substring (String string, int start) {
+    public static String substring (String string, int start) {
         return string.substring(index(string, start));
     }
 
