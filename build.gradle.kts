@@ -1,4 +1,3 @@
-import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
 import org.jfrog.gradle.plugin.artifactory.task.ArtifactoryTask
@@ -10,7 +9,6 @@ plugins {
     idea
     signing
     `maven-publish`
-    id("com.jfrog.bintray") version "1.8.5"
     id("com.jfrog.artifactory") version "4.21.0"
     id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
 }
@@ -98,23 +96,6 @@ signing {
     sign(publishing.publications[project.name])
 }
 
-// Use `gradle bintrayUpload` target to deploy to Bintray.
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    publish = true
-    override = true // enables overriding versions
-    pkg(closureOf<PackageConfig> {
-        repo = "maven"
-        name = project.name
-        vcsUrl = vcs
-        desc = project.description
-        // https://youtrack.jetbrains.com/issue/KT-33879
-        setLicenses("BSD 3-Clause")
-        setPublications(project.name)
-    })
-}
-
 // Use `gradle artifactoryPublish` target to deploy to Artifactory.
 artifactory {
     setContextUrl("https://norswap.jfrog.io/artifactory")
@@ -147,7 +128,6 @@ nexusPublishing {
 
 // Deploy to all locations.
 tasks.register("deploy") {
-    dependsOn("bintrayUpload")
     dependsOn("artifactoryPublish")
 
     // NOTE: must be changed if we only want to publish a single publications.
