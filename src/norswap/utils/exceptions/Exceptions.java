@@ -91,8 +91,9 @@ public final class Exceptions
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
-     * might throw bu wrapping it in a {@link NoStackException}.
+     * Return the value returned by the given supplier, rethrowing any checked {@link Exception} it
+     * might throw by wrapping it in a {@link NoStackException}. The point is to suppress the
+     * Java's checked expression check.
      */
     public static void suppress (ThrowingRunnable runnable) {
         try {
@@ -107,8 +108,9 @@ public final class Exceptions
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Return the value returned by the given supplier, suppressing any checked {@link Exception} it
-     * might throw but wrapping it in a {@link NoStackException}.
+     * Return the value returned by the given supplier, rethrowing any checked {@link Exception} it
+     * might throw after wrapping it in a {@link NoStackException}. The point is to suppress the
+     * Java's checked expression check.
      */
     public static <T> T suppress (ThrowingSupplier<T> supplier) {
         try {
@@ -169,6 +171,48 @@ public final class Exceptions
     public static <T> T exprThrow (Throwable t) {
         rethrow(t);
         return cast(null);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Run the given supplier, returning its value if it completes successfully, and returning
+     * the default value if it fails with an exception or error.
+     */
+    public static <T> T runOr (ThrowingSupplier<T> supplier, T defaultValue) {
+        try {
+            return supplier.get();
+        } catch (Throwable t) {
+            return defaultValue;
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Run the given supplier, returning its value if it completes successfully, and returning
+     * the default value if it fails with an exception or error.
+     */
+    public static <T> T runOr (ThrowingSupplier<T> supplier, Supplier<T> defaultValue) {
+        try {
+            return supplier.get();
+        } catch (Throwable t) {
+            return defaultValue.get();
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Run the given supplier, returning its value if it completes successfully, and returning
+     * {@code null} if it fails with an exception or error.
+     */
+    public static <T> T runOrNull (ThrowingSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     // ---------------------------------------------------------------------------------------------

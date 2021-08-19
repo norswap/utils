@@ -165,8 +165,8 @@ public final class Reflection
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Provides a try statement for invocations of {@link MethodHandle#invoke}, {@link
-     * MethodHandle#invokeExact}, etc. Suppressed any checked exceptions thrown by the method using
+     * Provides a try statement to wrap around invocations of {@link MethodHandle#invoke}, {@link
+     * MethodHandle#invokeExact}, etc. Suppresses any checked exceptions thrown by the method using
      * {@link Exceptions#rethrow}, and wraps any {@link WrongMethodTypeException} resulting from an
      * incorrect invocation in an {@link Error}.
      */
