@@ -38,3 +38,6 @@
 
 # Intelllij Maven
 .idea/**/gradle.xml
+
+# IntelliJ Other
+.idea/libraries-with-intellij-classes.xml
