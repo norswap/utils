@@ -41,3 +41,4 @@
 
 # IntelliJ Other
 .idea/libraries-with-intellij-classes.xml
+.idea/runConfigurations.xml

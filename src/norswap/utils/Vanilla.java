@@ -90,7 +90,7 @@ public final class Vanilla
         for (Object item: items)
         {
             /**/ if (item instanceof Object[])
-                addArray(col, item);
+                addArray(col, (Object[]) item);
             else if (item instanceof Iterable<?>)
                 addAll(col, cast(item));
             else if (item instanceof Enumeration<?>)
