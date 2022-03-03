@@ -1,7 +1,3 @@
-import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
-import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
-import org.jfrog.gradle.plugin.artifactory.task.ArtifactoryTask
-
 // === PLUGINS =====================================================================================
 
 plugins {
@@ -9,14 +5,13 @@ plugins {
     idea
     signing
     `maven-publish`
-    id("com.jfrog.artifactory") version "4.21.0"
-    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 // === MAIN BUILD DETAILS ==========================================================================
 
 group = "com.norswap"
-version = "2.1.11"
+version = "2.1.12"
 description = "A collection of Java (8+) utilities"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
@@ -84,6 +79,7 @@ signing {
     // replacing the values as needed:
     // signing.gnupg.keyName=<KEY_ID>
     // signing.gnupg.passphrase=<PASSWORD_WITHOUT_QUOTES>
+    // (You'll need to setup and/or import that key with gpg --generate-key / --import)
 
     // You'll need to have GnuPG installed, and it should be aliased to "gpg2"
     // (homebrew on mac links it to only "gpg" by default).
@@ -94,22 +90,6 @@ signing {
 
     useGpgCmd()
     sign(publishing.publications[project.name])
-}
-
-// Use `gradle artifactoryPublish` target to deploy to Artifactory.
-artifactory {
-    setContextUrl("https://norswap.jfrog.io/artifactory")
-    publish(closureOf<PublisherConfig> {
-        setContextUrl("https://norswap.jfrog.io/artifactory")
-        repository(closureOf<DoubleDelegateWrapper> {
-            invokeMethod("setRepoKey", project.name)
-            invokeMethod("setUsername", System.getenv("JFROG_USER"))
-            invokeMethod("setPassword", System.getenv("JFROG_KEY"))
-        })
-        defaultsClosure = closureOf<ArtifactoryTask> {
-            publications(project.name)
-        }
-    })
 }
 
 // Use `gradle publishToSonatype closeAndReleaseSonatypeStagingDirectory` to deploy to Maven Central.
@@ -128,8 +108,6 @@ nexusPublishing {
 
 // Deploy to all locations.
 tasks.register("deploy") {
-    dependsOn("artifactoryPublish")
-
     // NOTE: must be changed if we only want to publish a single publications.
     val publishToSonatype = tasks["publishToSonatype"]
     val closeAndReleaseSonatype = tasks["closeAndReleaseSonatypeStagingRepository"]
