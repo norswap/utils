@@ -122,7 +122,10 @@ public final class IO
              PrintStream ps = new PrintStream(baos))
         {
             T value = withStdout(ps, f);
-            result = new Pair<>(baos.toString(), value);
+            String string = baos.toString();
+            // replace windows line endings
+            if (OperatingSystem.OS == OperatingSystem.WINDOWS) string = string.replace("\r\n", "\n");
+            result = new Pair<>(string, value);
         } catch (IOException e) {
             // close() exception, ignore, result will be set
         }
