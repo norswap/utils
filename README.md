@@ -22,6 +22,7 @@ A collection of Java (8+) utilities.
 - `Util`: Miscellaneous utility functions.
 - `NArrays`: Utility functions dealing with arrays.
    (Other array functions of interest are defined in `Vanilla`.)
+- `OperatingSystem`: Operating system detection.
 
 ## Data Structures
 (`data.structures` package)
